@@ -1,6 +1,6 @@
 <?php
 //verbindung mit der Datenbank db herstellen
-$servername = "localhost";
+$servername = "localhost:18002";
 $user = "root";
 $pw = "";
 $db = "ecommerce";
