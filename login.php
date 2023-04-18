@@ -1,33 +1,63 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Loginpage</title>
+    <title>Login</title>
 
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 </head>
 <body>
     <?php
-    //verbindung mit der Datenbank db herstellen
     include ('connect.php');
-
-    //a prepare statement (for the secure version)
-    $search_user = $con->prepare("SELECT id FROM user WHERE Benutzer = ? AND Passwort = ?");
-    $search_user->bind_param('ss',$benutzer,$passwort);
-    $search_user->execute();
-    $search_result =$search_user->get_result();
-
-    //query normale di sql
-    $con->query("INSERT INTO `user`(`Bezeichnung`,`Datum`,`FibuID`,`Betrag`) VALUES ('$bezeichnung', '$datum', '$fibuid', '$betrag')");
-    $res = $con->query("SELECT * FROM `user` WHERE id = 1 ");
-    if ($res->num_rows > 0) {
-    while ($i = $res->fetch_assoc()) {
-        $username = $i['name'];
+    //check if already logged in
+    if(isset($_SESSION['loginsession'])){
+        header('location: landingpage.php');
     }
+
+    //if button is clicked
+    if(isset($_POST['login'])){
+
+        $username = input($_POST['user']);
+        $password = input($_POST['password']);
+
+        //check if login is correct
+
+        //todo for the secure version
+        /*$search_user = $con->prepare("SELECT * FROM user WHERE email = ? AND password = ?");
+        $search_user->bind_param('ss',$username,$password);
+        $search_user->execute();
+        $search_result =$search_user->get_result();*/
+
+        $search_result = $con->query("SELECT * FROM user WHERE email = '$username' AND password = '$password'");
+
+        if($search_result->num_rows == 1){
+            $search_object = $search_result->fetch_object();
+            $_SESSION['loginsession'] = $search_object->id;
+            header('location: landingpage.php');
+        }else{
+            echo('<p style="color:red">Wrong data</p>');
+        }
+    }
+
+    $con->close();
     ?>
 
-    <h1>Login! ciao <?php echo $username ?></h1>
+    <div>
+        <h1> Login </h1>
+        <form action="" method="post">
+            <p>Email</p>
+            <input required type="text" name="user" >
+            <p>Password</p>
+            <input required type="password" name="password" >
+            <br><br>
+            <input type="submit" name="login" value="LOG IN">
+        </form>
+        <a href="register.php">To register page</a>
+    </div>
 
 
 </body>
