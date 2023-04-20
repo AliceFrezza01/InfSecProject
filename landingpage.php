@@ -28,6 +28,10 @@ session_start();
         </script>
         <?php
     }
+
+    $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT");
+
+    echo ($search_result)
 ?>
 
 <!DOCTYPE html>
