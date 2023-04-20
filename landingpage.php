@@ -28,9 +28,11 @@ session_start();
         <?php
     }
 
+
+    $lowerStringInserted = "";
     //function for the search button
     if (isset($_POST['search'])) {
-        $lowerStringInserted = LOWER($_POST['toSearch']);
+        $lowerStringInserted = $_POST['toSearch'];
     }
 
     //function for the reset button
@@ -38,12 +40,7 @@ session_start();
         $lowerStringInserted = "";
     }
 
-    //sql query for retrieving all the products
-    if ($lowerStringInserted==null && $lowerStringInserted=="")
-        $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT");
-    else 
-        //it retrieves the product is their name is a substring of what the user searched for
-        $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
+    $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
 ?>
@@ -90,7 +87,7 @@ session_start();
                 }
 
                 .container-fluid:hover {
-                    background-color: #FDF5E6;
+                    background-color: #FCFF9E;
                 }
 
                 div input[type=text] {
@@ -114,12 +111,19 @@ session_start();
                 .link_products {
                     text-decoration: none;
                 }
+
+                .addnewproduct {
+                    color: black;
+                    background-color: white;
+                    border-style: solid;
+                    border-width: 1px;
+                }
         </style>
     </head>
     <body>
         <!-- TOP MENU -->
         <div class="topnav">
-            <a class="active" href="#landingpage">Landing Page</a>
+            <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
             <a href="#orders">Orders</a>
             <form action='' style="padding: 14px 16px;" method='post'>
@@ -138,7 +142,7 @@ session_start();
             </div>
             <!-- ADD NEW PRODUCT -->
             <div style="margin-top: 25px">
-                <button type="submit">Add new Product</button>
+                <a href="productNew.php" class="addnewproduct">Add new Product</a>
             </div>
         </div>
         <!-- PRODUCT MENU -->
@@ -152,7 +156,7 @@ session_start();
                         {
                             $row = mysqli_fetch_array($search_result);
                             if ($row!=null) {
-                                echo "<div class='col'><a className=\"link_products\" href=\"#product\">";
+                                echo "<div class='col'><a href=\"#product\">";
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
