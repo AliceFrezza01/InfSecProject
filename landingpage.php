@@ -18,7 +18,6 @@ session_start();
 
     $user = $userqueryresult->fetch_assoc();
 
-
     //function for the logout button
     if (isset($_POST['logout'])) {
         session_destroy();
@@ -29,26 +28,21 @@ session_start();
         <?php
     }
 
-    function execute_on_load() {
-        echo "<script>";
-        echo "window.onload = function() {";
-        echo $lowerStringInserted = "";
-        echo "}";
-        echo "</script>";
-      }
-
+    //function for the search button
     if (isset($_POST['search'])) {
-        $stringInserted = $_POST['toSearch'];
-        $lowerStringInserted = strtolower($stringInserted);
+        $lowerStringInserted = LOWER($_POST['toSearch']);
     }
 
+    //function for the reset button
     if (isset($_POST['resetSearch'])) {
         $lowerStringInserted = "";
     }
 
+    //sql query for retrieving all the products
     if ($lowerStringInserted==null && $lowerStringInserted=="")
         $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT");
     else 
+        //it retrieves the product is their name is a substring of what the user searched for
         $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
@@ -92,8 +86,13 @@ session_start();
                 .container-fluid {
                     border-style: solid;
                     border-width: 5px;
+                    border-color: black;
                 }
-                /* Style the search box inside the navigation bar */
+
+                .container-fluid:hover {
+                    background-color: #FDF5E6;
+                }
+
                 div input[type=text] {
                     padding: 6px;
                     border: none;
@@ -110,6 +109,10 @@ session_start();
                 .col {
                     padding: 10px;
                     height: 
+                }
+
+                .link_products {
+                    text-decoration: none;
                 }
         </style>
     </head>
@@ -149,13 +152,13 @@ session_start();
                         {
                             $row = mysqli_fetch_array($search_result);
                             if ($row!=null) {
-                                echo "<div class='col'>";
+                                echo "<div class='col'><a className=\"link_products\" href=\"#product\">";
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
-                                        echo "<img src='" . $row['imgLink'] . "' height=\"100\" />";
+                                        echo "<br/><img src='" . $row['imgLink'] . "' height=\"100\" />";
                                     echo "</div>";
-                                echo "</div>";
+                                echo "</a></div>";
                             }
                         }
                     echo "</div>";
