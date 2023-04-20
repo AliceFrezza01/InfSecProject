@@ -29,9 +29,29 @@ session_start();
         <?php
     }
 
-    $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT");
+    function execute_on_load() {
+        echo "<script>";
+        echo "window.onload = function() {";
+        echo $lowerStringInserted = "";
+        echo "}";
+        echo "</script>";
+      }
 
-    echo ($search_result)
+    if (isset($_POST['search'])) {
+        $stringInserted = $_POST['toSearch'];
+        $lowerStringInserted = strtolower($stringInserted);
+    }
+
+    if (isset($_POST['resetSearch'])) {
+        $lowerStringInserted = "";
+    }
+
+    if ($lowerStringInserted==null && $lowerStringInserted=="")
+        $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT");
+    else 
+        $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
+    $nr_results = $search_result->num_rows;
+    $rows_needed = ceil($nr_results/3);
 ?>
 
 <!DOCTYPE html>
@@ -89,6 +109,7 @@ session_start();
 
                 .col {
                     padding: 10px;
+                    height: 
                 }
         </style>
     </head>
@@ -106,8 +127,11 @@ session_start();
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
             <!-- SEARCH BAR -->
             <div>
-                <input type="text" placeholder="Search..">
-                <button type="submit">Search</button>
+                <form method="post">
+                    <input type="text" name="toSearch" placeholder="Search..">
+                    <input type="submit" name="search" value="Search" />
+                    <input type="submit" name="resetSearch" value="Reset" />                 
+                </form>
             </div>
             <!-- ADD NEW PRODUCT -->
             <div style="margin-top: 25px">
@@ -116,25 +140,27 @@ session_start();
         </div>
         <!-- PRODUCT MENU -->
         <div class="container text-center">
-            <div class="row">
-                <div class="col">
-                    <div class="container-fluid">
-                        product <br/>
-                        bla bla bla
-                    </div>  
-                </div>
-                <div class="col">
-                    <div class="container-fluid">
-                        product <br/>
-                        bla bla bla
-                    </div>  
-                </div>
-                <div class="col">
-                    <div class="container-fluid">
-                        product <br/>
-                        bla bla bla
-                    </div>  
-                </div>
+            <?php
+                for ($x = 0; $x < $rows_needed; $x++) 
+                {
+                    echo "<div class='row'>";
+
+                        for ($y = 0; $y<3; $y++) 
+                        {
+                            $row = mysqli_fetch_array($search_result);
+                            if ($row!=null) {
+                                echo "<div class='col'>";
+                                    echo "<div class='container-fluid'>";
+                                        echo "<b>" . $row['name'] . "</b><br/>";
+                                        echo $row['price'] . "€";
+                                        echo "<img src='" . $row['imgLink'] . "' height=\"100\" />";
+                                    echo "</div>";
+                                echo "</div>";
+                            }
+                        }
+                    echo "</div>";
+                }
+            ?>
             </div>
         </div>
     </body>
