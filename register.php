@@ -2,17 +2,21 @@
 session_start();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 </head>
 <body>
 <?php
-include ('connect.php');
+
+ini_set( 'error_reporting', E_ALL );
+ini_set( 'display_errors', true );
+
+include 'connect.php';
+
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
@@ -28,15 +32,15 @@ if(isset($_POST['register'])){
     $password = input($_POST['password']);
 
     //check if user already exists
-
+//    $con = NULL;
     $search_result = $con->query("SELECT * FROM user WHERE email = '$username'");
 
     if($search_result->num_rows == 1){
         echo('<p style="color:red">User with this email already exists</p>');
     }else{
         //create new user
-        $isVendor = ($usertype == 'vendor');
-        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`) VALUES ('$name','$username','$password','$isVendor')");
+        $isVendor = ($usertype == 'vendor');    //TODO issue with vendor when
+        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', 1)");
         if (!$result) {
             echo('<p style="color:red">Error creating user</p>');
         } else {

@@ -37,6 +37,7 @@ session_start();
         if($search_result->num_rows == 1){
             $search_object = $search_result->fetch_object();
             $_SESSION['loginsession'] = $search_object->id;
+            console_log($search_object->id);
             header('location: landingpage.php');
         }else{
             echo('<p style="color:red">Wrong data</p>');
