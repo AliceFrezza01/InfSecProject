@@ -51,7 +51,7 @@
                 color: white;
                 }
 
-                .header {
+                .headerHello {
                     background-color: gray;
                 }
 
@@ -67,7 +67,7 @@
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
         </div>
-        <div class="header">
+        <div class="headerHello">
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
             </div>
         </div>
