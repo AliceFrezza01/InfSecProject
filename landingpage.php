@@ -1,32 +1,10 @@
 <?php
-session_start();
+    session_start();
 ?>
 <?php
 
     include ('connect.php');
-
-    if(!isset($_SESSION['loginsession'])){
-        header('location: login.php');
-    }
-    $userid = $_SESSION['loginsession'];
-    $userqueryresult = $con->query("SELECT * FROM user WHERE id = '$userid'");
-    if($userqueryresult->num_rows != 1){
-        //redirect also on login page because the userid does not exist or exists multiple times
-        header('location: login.php');
-    }
-
-    $user = $userqueryresult->fetch_assoc();
-
-    //function for the logout button
-    if (isset($_POST['logout'])) {
-        session_destroy();
-        ?>
-        <script>
-            window.location.replace("login.php");
-        </script>
-        <?php
-    }
-
+    include ('authentificationUser.php');
 
     $lowerStringInserted = "";
     //function for the search button
@@ -39,9 +17,12 @@ session_start();
         $lowerStringInserted = "";
     }
 
-    $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
+    //this query returns the list of products with a name similar at the one inserted by the user in the search bar
+    $search_result = $con->query("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
+
+    $con->close();
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +36,8 @@ session_start();
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <style>
+        
+                /* Nav Bar Css */
                 .topnav {
                 background-color: #333;
                 overflow: hidden;
@@ -79,6 +62,11 @@ session_start();
                 color: white;
                 }
 
+                .headerHello {
+                    background-color: gray;
+                }
+
+                 /* Css for other */
                 .container-fluid {
                     border-style: solid;
                     border-width: 5px;
@@ -98,13 +86,9 @@ session_start();
                     border-style: solid;
                     border-width: 1px;
                 }
-                .header {
-                    background-color: gray;
-                }
-
+                
                 .col {
                     padding: 10px;
-                    height: 
                 }
 
                 .link_products {
@@ -124,12 +108,12 @@ session_start();
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
-            <a href="#orders">Orders</a>
+            <a href="orders.php?vendorId=<?php echo $userid ?>">Orders</a>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
         </div>
-        <div class="header">
+        <div class="headerHello">
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
             <!-- SEARCH BAR -->
             <div>
@@ -150,18 +134,20 @@ session_start();
                 for ($x = 0; $x < $rows_needed; $x++) 
                 {
                     echo "<div class='row'>";
-
                         for ($y = 0; $y<3; $y++) 
                         {
                             $row = mysqli_fetch_array($search_result);
                             if ($row!=null) {
-                                echo "<div class='col'><a href=\"#product\">";
+                                echo "<div class='col'>";
+                                //sending the Id of the product through the link to productInfo
+                                echo "<a href=\"productInfo.php?productId=" . $row['id'] . "\">";
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
                                         echo "<br/><img src='" . $row['imgLink'] . "' height=\"100\" />";
                                     echo "</div>";
                                 echo "</a></div>";
+
                             }
                         }
                     echo "</div>";

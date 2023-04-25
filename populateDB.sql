@@ -1,18 +1,16 @@
 TRUNCATE TABLE user;
 TRUNCATE TABLE product;
+TRUNCATE TABLE purchasedby;
 
 -- Buyers
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("carlo@gmail.com", "psw_carlo", 0, "carlo", 0);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("alex@gmail.com", "psw_alex", 0, "alex", 0);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("maria@gmail.com", "psw_maria", 0, "maria", 0);
-
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("giancarlo@gmail.com", "psw_giancarlo", 0, "giancarlo", 0);
@@ -21,10 +19,8 @@ VALUES ("giancarlo@gmail.com", "psw_giancarlo", 0, "giancarlo", 0);
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("filippo@gmail.com", "psw_filippo", 0, "filippo", 1);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("irma@gmail.com", "psw_irma", 0, "irma", 1);
-
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("mariene@gmail.com", "psw_mariene", 0, "mariene", 1);
@@ -43,9 +39,6 @@ VALUES ("iacopo@gmail.com", "psw_iacopo", 0, "iacopo", 1);
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("goffredo@gmail.com", "psw_goffredo", 0, "goffredo", 1);
-
-INSERT INTO user(email, password, salt, name, isVendor)
-VALUES ("clio@gmail.com", "psw_clio", 0, "clio", 1);
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("clio@gmail.com", "psw_clio", 0, "clio", 1);
@@ -99,4 +92,96 @@ VALUES ("fresh bread", 1.50, "https://images.unsplash.com/photo-1681766864796-f2
 INSERT INTO product(name, price, imgLink, creatorUserID)
 VALUES ("hand art", 240.00, "https://images.unsplash.com/photo-1681484357464-a9c81326c04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1328&q=80", 11);
 
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("soap container", 7.20, "https://images.unsplash.com/photo-1614806686974-4d53169a47cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80", 1);
 
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("donuts", 10.00, "https://images.unsplash.com/photo-1514517521153-1be72277b32f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80", 1);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("love sign, ideal for couples", 6.20, "https://images.unsplash.com/photo-1518414881329-0f96c8f2a924?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1189&q=80", 1);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("chocolate eggs for easter", 3.75, "https://plus.unsplash.com/premium_photo-1676813808814-38617c86c419?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1335&q=80", 1);
+
+-- Orders
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (1, 1, '2023-04-25 15:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (2, 3, '2023-05-25 10:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (3, 5, '2023-06-25 12:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (4, 7, '2023-07-25 08:15:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (5, 9, '2023-08-25 16:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (6, 11, '2023-09-25 11:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (7, 13, '2023-10-25 13:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (8, 2, '2023-11-25 18:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (9, 4, '2023-12-25 11:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (10, 6, '2024-01-25 08:15:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (11, 8, '2024-02-25 16:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (12, 10, '2024-03-25 10:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (13, 12, '2024-04-25 12:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (14, 14, '2024-05-25 17:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (15, 1, '2024-06-25 11:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (16, 3, '2024-07-25 08:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (1, 5, '2024-08-25 13:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (2, 7, '2024-09-25 15:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (3, 9, '2024-10-25 09:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (4, 11, '2024-11-25 14:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (7, 12, '2025-01-05 11:20:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (4, 9, '2025-02-10 09:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (2, 3, '2025-03-15 15:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (10, 7, '2025-04-20 12:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (13, 11, '2025-05-25 16:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (16, 14, '2025-06-30 10:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (5, 8, '2025-07-05 13:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (3, 6, '2025-08-10 11:15:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (1, 1, '2025-09-15 08:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (12, 10, '2025-10-20 14:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (6, 5, '2025-11-25 16:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (8, 13, '2025-12-30 10:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (14, 2, '2026-01-05 14:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (15, 14, '2026-02-10 11:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (11, 4, '2026-03-15 08:15:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (9, 7, '2026-04-20 13:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (7, 12, '2026-05-25 16:00:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (4, 9, '2026-06-30 09:30:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (2, 3, '2026-07-05 12:45:00');
+
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (10, 7, '2026-08-10 15:30:00');
