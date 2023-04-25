@@ -54,3 +54,14 @@ img {
     display: flex;
     flex-direction: row;
 }
+
+
+/*chat styling*/
+.ownwrittenmsg{
+    background-color: #a9f9c1;
+    margin-left: auto; margin-right:10px;
+}
+.recievedmsg{
+    background-color: #8282f1;
+   margin-left:10px;
+}

@@ -1,22 +1,7 @@
 <?php
 session_start();
-?>
-<!DOCTYPE html>
-<html lang="en-us">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<?php
-
-ini_set( 'error_reporting', E_ALL );
-ini_set( 'display_errors', true );
 
 include 'connect.php';
-
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
@@ -58,6 +43,20 @@ if(isset($_POST['register'])){
 
 $con->close();
 ?>
+
+
+
+<!--HTML CODE-->
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
 <div>
     <h1> Register </h1>

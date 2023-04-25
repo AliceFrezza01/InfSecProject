@@ -118,7 +118,7 @@ $con->close();
                 <div class="wrap-text">
                     Price: <?php echo $productPrice; ?> €<br>
                     Sold: <?php echo $productPurchasedCount; ?>x<br>
-                    Seller: <?php echo $productCreatorName; ?><br>
+                    Seller: <?php echo $productCreatorName; ?><a href="chat.php?id=<?php echo $productCreatorID  ?>">Start Chat</a><br>
                     <?php if(!$isLoggedIn){ ?>
                         <p> login to buy the product</p>
                         <a href="login.php">To login page</a>
