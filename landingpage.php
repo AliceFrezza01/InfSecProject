@@ -42,6 +42,8 @@ session_start();
     $search_result = $con->query("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
+
+    $con->close();
 ?>
 
 <!DOCTYPE html>
@@ -150,7 +152,6 @@ session_start();
                 for ($x = 0; $x < $rows_needed; $x++) 
                 {
                     echo "<div class='row'>";
-
                         for ($y = 0; $y<3; $y++) 
                         {
                             $row = mysqli_fetch_array($search_result);
