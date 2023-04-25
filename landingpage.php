@@ -3,15 +3,11 @@ session_start();
 ?>
 <?php
 
-include ('connect.php');
+    include ('connect.php');
 
-    //TODO issue cant see landing page when logged in -> always redirects
-
-    //check if user is authenticated else redirect him to the login
     if(!isset($_SESSION['loginsession'])){
         header('location: login.php');
     }
-
     $userid = $_SESSION['loginsession'];
     $userqueryresult = $con->query("SELECT * FROM user WHERE id = '$userid'");
     if($userqueryresult->num_rows != 1){
