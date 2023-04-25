@@ -30,6 +30,8 @@ session_start();
             echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
         }
     }
+
+    $con->close();
 ?>
 
 <!DOCTYPE html>
