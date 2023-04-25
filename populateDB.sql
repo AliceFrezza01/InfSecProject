@@ -44,9 +44,6 @@ INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("clio@gmail.com", "psw_clio", 0, "clio", 1);
 
 INSERT INTO user(email, password, salt, name, isVendor)
-VALUES ("clio@gmail.com", "psw_clio", 0, "clio", 1);
-
-INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("adelaide@gmail.com", "psw_adelaide", 0, "adelaide", 1);
 
 
@@ -94,6 +91,18 @@ VALUES ("fresh bread", 1.50, "https://images.unsplash.com/photo-1681766864796-f2
 
 INSERT INTO product(name, price, imgLink, creatorUserID)
 VALUES ("hand art", 240.00, "https://images.unsplash.com/photo-1681484357464-a9c81326c04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1328&q=80", 11);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("soap container", 7.20, "https://images.unsplash.com/photo-1614806686974-4d53169a47cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80", 1);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("donuts", 10.00, "https://images.unsplash.com/photo-1514517521153-1be72277b32f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80", 1);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("love sign, ideal for couples", 6.20, "https://images.unsplash.com/photo-1518414881329-0f96c8f2a924?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1189&q=80", 1);
+
+INSERT INTO product(name, price, imgLink, creatorUserID)
+VALUES ("chocolate eggs for easter", 3.75, "https://plus.unsplash.com/premium_photo-1676813808814-38617c86c419?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1335&q=80", 1);
 
 -- Orders
 
@@ -147,7 +156,7 @@ INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (10, 7, '2025-04-20
 
 INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (13, 11, '2025-05-25 16:30:00');
 
-INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (16, 15, '2025-06-30 10:45:00');
+INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (16, 14, '2025-06-30 10:45:00');
 
 INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (5, 8, '2025-07-05 13:00:00');
 

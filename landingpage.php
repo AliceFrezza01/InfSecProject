@@ -126,7 +126,7 @@ session_start();
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
-            <a href="#orders">Orders</a>
+            <a href="orders.php?vendorId=<?php echo $userid ?>">Orders</a>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
