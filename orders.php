@@ -27,18 +27,14 @@ session_start();
         <?php
     }
 
+
     $vendorId = $_GET['vendorId'];
 
+    //this query shows all the orders that the sellers received from buyers
     $search_result = $con->query("SELECT * FROM product
-                                    INNER JOIN purchasedby ON product.id=purchasedBy.productID WHERE product.creatorUserID=" . $vendorId);
+                                    INNER JOIN purchasedby ON product.id=purchasedBy.productID WHERE product.creatorUserID=" . $vendorId . 
+                                    " ORDER BY buyerdate DESC;");
     $nr_results = $search_result->num_rows;
-
-    //product name, prezzo, date, name buyer
-
-    echo $nr_results;
-    echo $vendorId;
-
-    $con->close();
 ?>
 
 <!DOCTYPE html>
@@ -97,5 +93,44 @@ session_start();
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
             </div>
         </div>
+        <table class="table">
+            <!-- product name, prezzo, date, name buyer -->
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Date of Purchacee</th>
+                    <th scope="col">Email of Buyer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+
+                 if ($nr_results==0)
+                    echo "<h3>Noone has purchased your items yet. Come back later.</h3>";
+                 else {
+                    echo "<h3>List of your orders:</h3>";
+                    for ($x = 0; $x < $nr_results; $x++) 
+                    {
+   
+                       $row = mysqli_fetch_array($search_result);
+   
+                       $nameBuyer = $con->query("SELECT email FROM user WHERE id =" . $row['userID']);
+                       $rowNameBuyer = mysqli_fetch_array($nameBuyer);
+                       echo "<tr>";
+                           echo "<th scope=\"row\">" . ($x + 1) . "</th>";
+                           echo "<td>" . $row['name'] . "</td>";
+                           echo "<td>" . $row['price'] . "</td>";
+                           echo "<td>" . $row['buyerdate'] . "</td>";
+                           echo "<td>" . $rowNameBuyer['email'] . "</td>";
+                       echo "</tr>";
+                    }
+                }
+
+                 $con->close();
+                ?>
+            </tbody>
+        </table>
     </body>
 </html>
