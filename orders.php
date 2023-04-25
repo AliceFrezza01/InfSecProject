@@ -1,5 +1,5 @@
 <?php
-session_start();
+    session_start();
 ?>
 <?php
 
@@ -94,7 +94,7 @@ session_start();
             </div>
         </div>
         <table class="table">
-            <!-- product name, prezzo, date, name buyer -->
+            <!-- product name, prezzo, date, name buyer of the orders -->
             <thead>
                 <tr>
                     <th scope="col">#</th>
@@ -113,11 +113,12 @@ session_start();
                     echo "<h3>List of your orders:</h3>";
                     for ($x = 0; $x < $nr_results; $x++) 
                     {
-   
                        $row = mysqli_fetch_array($search_result);
    
+                       //this query retrieves the email address of the buyer starting from its ID
                        $nameBuyer = $con->query("SELECT email FROM user WHERE id =" . $row['userID']);
                        $rowNameBuyer = mysqli_fetch_array($nameBuyer);
+
                        echo "<tr>";
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
                            echo "<td>" . $row['name'] . "</td>";

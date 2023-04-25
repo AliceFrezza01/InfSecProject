@@ -1,5 +1,5 @@
 <?php
-session_start();
+    session_start();
 ?>
 <?php
 
@@ -27,7 +27,6 @@ session_start();
         <?php
     }
 
-
     $lowerStringInserted = "";
     //function for the search button
     if (isset($_POST['search'])) {
@@ -39,6 +38,7 @@ session_start();
         $lowerStringInserted = "";
     }
 
+    //this query returns the list of products with a name similar at the one inserted by the user in the search bar
     $search_result = $con->query("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
@@ -57,6 +57,8 @@ session_start();
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <style>
+        
+                /* Nav Bar Css */
                 .topnav {
                 background-color: #333;
                 overflow: hidden;
@@ -81,6 +83,11 @@ session_start();
                 color: white;
                 }
 
+                .header {
+                    background-color: gray;
+                }
+
+                 /* Css for other */
                 .container-fluid {
                     border-style: solid;
                     border-width: 5px;
@@ -100,10 +107,7 @@ session_start();
                     border-style: solid;
                     border-width: 1px;
                 }
-                .header {
-                    background-color: gray;
-                }
-
+                
                 .col {
                     padding: 10px;
                     height: 
@@ -156,7 +160,9 @@ session_start();
                         {
                             $row = mysqli_fetch_array($search_result);
                             if ($row!=null) {
-                                echo "<div class='col'><a href=\"productInfo.php?productId=" . $row['id'] . "\">";
+                                echo "<div class='col'>";
+                                //sending the Id of the product through the link to productInfo
+                                echo "<a href=\"productInfo.php?productId=" . $row['id'] . "\">";
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
