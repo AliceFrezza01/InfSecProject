@@ -5,14 +5,11 @@ TRUNCATE TABLE product;
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("carlo@gmail.com", "psw_carlo", 0, "carlo", 0);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("alex@gmail.com", "psw_alex", 0, "alex", 0);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("maria@gmail.com", "psw_maria", 0, "maria", 0);
-
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("giancarlo@gmail.com", "psw_giancarlo", 0, "giancarlo", 0);
@@ -21,10 +18,8 @@ VALUES ("giancarlo@gmail.com", "psw_giancarlo", 0, "giancarlo", 0);
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("filippo@gmail.com", "psw_filippo", 0, "filippo", 1);
 
-
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("irma@gmail.com", "psw_irma", 0, "irma", 1);
-
 
 INSERT INTO user(email, password, salt, name, isVendor)
 VALUES ("mariene@gmail.com", "psw_mariene", 0, "mariene", 1);
@@ -100,3 +95,4 @@ INSERT INTO product(name, price, imgLink, creatorUserID)
 VALUES ("hand art", 240.00, "https://images.unsplash.com/photo-1681484357464-a9c81326c04b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1328&q=80", 11);
 
 
+-- Orders

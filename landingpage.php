@@ -39,7 +39,7 @@ session_start();
         $lowerStringInserted = "";
     }
 
-    $search_result = $con->query("SELECT name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
+    $search_result = $con->query("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
     $nr_results = $search_result->num_rows;
     $rows_needed = ceil($nr_results/3);
 ?>
@@ -155,13 +155,14 @@ session_start();
                         {
                             $row = mysqli_fetch_array($search_result);
                             if ($row!=null) {
-                                echo "<div class='col'><a href=\"#product\">";
+                                echo "<div class='col'><a href=\"productInfo.php?productId=" . $row['id'] . "\">";
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
                                         echo "<br/><img src='" . $row['imgLink'] . "' height=\"100\" />";
                                     echo "</div>";
                                 echo "</a></div>";
+
                             }
                         }
                     echo "</div>";
