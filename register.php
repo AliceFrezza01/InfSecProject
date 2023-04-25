@@ -7,7 +7,7 @@ session_start();
     <meta charset="UTF-8">
     <title>Register</title>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <?php
@@ -75,8 +75,9 @@ $con->close();
         <p>Password</p>
         <input required type="password" name="password" >
         <br><br>
-        <input type="submit" name="register" value="REGISTER">
+        <input class="button" type="submit" name="register" value="REGISTER">
     </form>
+    <br>
     <a href="login.php">To login page</a>
 </div>
 
