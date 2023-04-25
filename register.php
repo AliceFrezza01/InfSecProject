@@ -39,7 +39,11 @@ if(isset($_POST['register'])){
         echo('<p style="color:red">User with this email already exists</p>');
     }else{
         //create new user
-        $isVendor = ($usertype == 'vendor');    //TODO issue with vendor when
+        if($usertype == 'vendor'){
+            $isVendor = 1;
+        }else{
+            $isVendor = 0;
+        }
         $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', 1)");
         if (!$result) {
             echo('<p style="color:red">Error creating user</p>');
