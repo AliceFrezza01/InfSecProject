@@ -8,8 +8,23 @@ ini_set( 'display_errors', true );
 //imports
 include 'connect.php';
 
-//test variables TODO delete afterwards -> pass variable from landing page
-$productID = 2;
+
+//count ALL Products!
+$sqlAllProducts = "SELECT COUNT(*) AS count FROM product;";
+$resultAllProducts = $con->query($sqlAllProducts);
+$rowAP = mysqli_fetch_array($resultAllProducts);
+
+$nrAllProducts = $rowAP['count'];
+
+
+//get productID from Landing Page
+$productID = $_GET['productId'];
+
+//if invalid ProductID
+if($productID == NULL || $nrAllProducts < $productID) {
+    header('location: landingpage.php');
+}
+
 
 //DB Calls for Product
 $sqlProduct = "SELECT name, price, imgLink, creatorUserID FROM product WHERE id = '$productID'";
@@ -58,6 +73,12 @@ if (isset($_POST['logout'])) {
     $isLoggedIn = false;
 }
 
+//BACK BUTTON
+if(isset($_POST['back'])){
+    header('location: landingpage.php');
+}
+
+
 //BUY PRODUCT BUTTON
 if (isset($_POST['buyProduct'])) {
     $date = date('Y-m-d H:i:s');
@@ -85,6 +106,51 @@ if (isset($_POST['buyProduct'])) {
 
 }
 
+
+$replyOfReviewID = 1;
+
+//get ALL REVIEWS for ProductID
+$sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY id ASC, replyOfReviewID ";
+$resultReview = $con->query($sqlReview);
+$nrReviews = $resultReview->num_rows;
+
+console_log('result NR: ' . $nrReviews);
+
+
+// if not NULL -> get Last to determine whether vendor can respond or not.
+//if($nrReviews != 0) {
+//    $sqlLastReview = "SELECT replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY productID DESC LIMIT 1";
+//    $resultLastReview = $con->query($sqlLastReview);
+//    $rowLR = mysqli_fetch_array($resultLastReview);
+//
+//    $lastReply = $rowLR['replyOfReviewID'];
+//    $lastUser = $rowLR['userID'];
+//    console_log("lastreplyID = " . $lastReply . "lastUSerID = " .$lastUser);
+//}
+
+
+//write Review
+if(isset($_POST['writeReview'])){
+    $text = input($_POST['reviewText']);
+    $replyOfReviewID = input($_POST['currentReviewID']) + 1;
+
+    $sqlwriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES ('$productID', '$loggedInUserID', '$text', '$replyOfReviewID')";
+    $result = $con->query($sqlwriteReview);
+}
+
+
+function inputFunction($currentReviewID){
+    echo "<form action=\"\" method=\"post\">";
+        echo "<input type='hidden' name='currentReviewID' value='$currentReviewID'/>";
+        echo "<input required type=\"text\" name=\"reviewText\" placeholder=\"Review...\">";
+        echo "<input type=\"submit\" name=\"writeReview\" value=\"WRITE REVIEW\"  class=\"button\">";
+    echo "</form>";
+}
+
+
+
+
+
 $con->close();
 ?>
 
@@ -103,24 +169,27 @@ $con->close();
         <link rel="stylesheet" href="styles.css">
     </head>
 
-    <body>
+    <body class="productInfo">
 <!--    TODO TO BE REMOVED-->
         <?php if($isLoggedIn){ ?>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT" class="button">
             </form>
         <?php } ?>
+        <form action='' style="padding: 14px 16px;" method='post'>
+            <input type="submit" name="back" value="BACK" class="button">
+        </form>
 <!--    DISPLAY PRODUCT-->
         <div style="padding: 14px 16px;">
-            <h1> <?php echo $productName; ?> </h1>
+            <h1 class="title1"> <?php echo $productName; ?> </h1>
             <div class="display-flex">
-                <img src="<?php echo $productImgLink; ?>" alt="Product Picture" ><br>
+                <img class="imgProductInfo" src="<?php echo $productImgLink; ?>" alt="Product Picture" ><br>
                 <div class="wrap-text">
                     Price: <?php echo $productPrice; ?> €<br>
                     Sold: <?php echo $productPurchasedCount; ?>x<br>
                     Seller: <?php echo $productCreatorName; ?><a href="chat.php?id=<?php echo $productCreatorID  ?>">Start Chat</a><br>
                     <?php if(!$isLoggedIn){ ?>
-                        <p> login to buy the product</p>
+                        <p class="textPlain"> login to buy the product</p>
                         <a href="login.php">To login page</a>
                     <?php } ?>
 
@@ -134,18 +203,64 @@ $con->close();
         </div>
 <!--    REVIEWS-->
         <div style="padding: 14px 16px;" class="reviews">
-            <h2> Reviews </h2>
+            <h2 class="title2"> Reviews </h2>
+
+            <?php
+                if($nrReviews != 0) {
+                    $x = 0;
+                    $lastReviewID = 0;
+                    while ($x < $nrReviews) {
+                        $rowRR = mysqli_fetch_array($resultReview);
+
+                        if($rowRR['replyOfReviewID'] < $lastReviewID){
+                            if (!$isProductOwner) {
+                                echo "<p style=\"color: red\">". "C". inputFunction($lastReviewID). "</p><br/>";
+                            }
+                            else if($lastReviewID == $loggedInUserID) {
+                                echo "<p style=\"color: red\">" . "V". inputFunction($lastReviewID). "</p><br/>";
+                            }
+                        }
+
+                        if ($rowRR['replyOfReviewID'] == 0){
+                            echo "<br/><p>" . "START User Review" . $rowRR['text'] . "</p><br/>";
+
+                        }
+                        else {
+                            if($rowRR['replyOfReviewID'] != $loggedInUserID){
+                                echo "<p style=\"text-indent:10px;\">" . "User Review " . $rowRR['text'] . "</p><br/>";
+                            }
+                            else {
+                                echo "<p style=\"text-indent:10px;\">" . "Vendor Response " . $rowRR['text'] . "</p><br/>";
+                            }
+                        }
+                        $x = $x +1;
+                        $lastReviewID = $rowRR['replyOfReviewID'];
+                    }
+
+                    if (!$isProductOwner) {
+                        echo "<p style=\"color: red\">" . "C". inputFunction($lastReviewID). "</p><br/>";
+                    }
+                    else if($lastReviewID == $loggedInUserID){
+                        echo "<p style=\"color: red\">" ."V". inputFunction($lastReviewID) . "</p><br/>";
+                    }
+
+                }
+                else {
+                    echo "<p style=\"color: red\">" . "C". inputFunction(-1). "</p><br/>";
+                }
+            ?>
+
             <?php if(!$isLoggedIn){ ?>
-                <p> please log in to review the product</p>
+                <p class="textPlain"> please log in to review the product</p>
                 <a href="login.php">To login page</a>
             <?php } ?>
 
             <?php if(!$isProductOwner && $isLoggedIn){ ?>
-                <p> is customer -> can write review</p>
+                <p class="textPlain"> is customer -> can write review</p>
             <?php } ?>
 
             <?php if($isProductOwner && $isLoggedIn){ ?>
-                <p style="color: red"> is vendor -> can respond to reviews</p>
+                <p class="textPlain" style="color: red"> is vendor -> can respond to reviews</p>
             <?php } ?>
         </div>
     </body>
