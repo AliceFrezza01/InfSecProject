@@ -8,6 +8,9 @@ ini_set( 'display_errors', true );
 //imports
 include 'connect.php';
 
+global $con;
+//TODO manage in browser back button
+
 
 //count ALL Products!
 $sqlAllProducts = "SELECT COUNT(*) AS count FROM product;";
@@ -20,10 +23,11 @@ $nrAllProducts = $rowAP['count'];
 //get productID from Landing Page
 $productID = $_GET['productId'];
 
-//if invalid ProductID
+//if invalid ProductID -> LANDINGPAGE
 if($productID == NULL || $nrAllProducts < $productID) {
     header('location: landingpage.php');
 }
+
 
 
 //DB Calls for Product
@@ -64,13 +68,20 @@ if(isset($_SESSION['loginsession'])){
 
     if($productCreatorID == $loggedInUserID)
         $isProductOwner = true;
-
 }
+
+//get Name of logged in user
+$sqlLoggedIn = "SELECT name FROM user WHERE id = '$loggedInUserID'";
+$resultLoggedIn = $con->query($sqlLoggedIn);
+$rowLI = mysqli_fetch_array($resultLoggedIn);
+
+$loggedInUserName = $rowLI['name'];
 
 //LOGOUT BUTTON -> only for testing purposes TODO delete this here
 if (isset($_POST['logout'])) {
     session_destroy();
     $isLoggedIn = false;
+    header('location: login.php');
 }
 
 //BACK BUTTON
@@ -103,55 +114,90 @@ if (isset($_POST['buyProduct'])) {
         }
     }
     console_log('bought product');
-
+    header("Refresh:0");
 }
 
 
-$replyOfReviewID = 1;
-
 //get ALL REVIEWS for ProductID
-$sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY id ASC, replyOfReviewID ";
+$sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY replyOfReviewID DESC, id ";
 $resultReview = $con->query($sqlReview);
 $nrReviews = $resultReview->num_rows;
 
-console_log('result NR: ' . $nrReviews);
+console_log('result NR: ' . $nrReviews); //TODO delete when done
 
 
-// if not NULL -> get Last to determine whether vendor can respond or not.
-//if($nrReviews != 0) {
-//    $sqlLastReview = "SELECT replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY productID DESC LIMIT 1";
-//    $resultLastReview = $con->query($sqlLastReview);
-//    $rowLR = mysqli_fetch_array($resultLastReview);
-//
-//    $lastReply = $rowLR['replyOfReviewID'];
-//    $lastUser = $rowLR['userID'];
-//    console_log("lastreplyID = " . $lastReply . "lastUSerID = " .$lastUser);
-//}
+//get Reviewer User Names
+if($nrReviews > 0){
+    $reviews = [];
+    while ($row = $resultReview->fetch_assoc()) {
+        $reviews[] = $row;
+    }
+
+    $ids = array_column($reviews, 'userID');
+    $reviewerIds = implode(',', $ids);
+
+    $reviewUsers = "SELECT name, id FROM user where id in ($reviewerIds)";
+    $resultAllUserNames = $con->query($reviewUsers);
+
+    $allUserIds = [];
+    $allUserNames = [];
+    while ($row = $resultAllUserNames->fetch_assoc()) {
+        $allUserIds[] = $row['id'];
+        $allUserNames[] = $row['name'];
+    }
+
+    mysqli_data_seek($resultAllUserNames, 0);
+
+
+    $positionArray = [];
+    $positionNamesArray = [];
+
+    $j = 1;
+    $p = 0;
+    for($i = 0; $i < count($allUserIds); $i++){
+        for(;$j <= $allUserIds[count($allUserIds)-1]; $j++){
+            if($allUserIds[$i] == $j){
+                $positionArray[$p] = $i;
+                $positionNamesArray[$p] = $allUserNames[$i];
+                $j++;
+                $p++;
+                break;
+            }
+            else {
+                $positionArray[$j] = 0;
+                $positionNamesArray[$j-1] = 'null';
+                $p++;
+            }
+        }
+    }
+}
+
 
 
 //write Review
 if(isset($_POST['writeReview'])){
     $text = input($_POST['reviewText']);
-    $replyOfReviewID = input($_POST['currentReviewID']) + 1;
+    $replyOfReviewID = input($_POST['currentReviewID']);
 
-    $sqlwriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES ('$productID', '$loggedInUserID', '$text', '$replyOfReviewID')";
-    $result = $con->query($sqlwriteReview);
+    $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES ('$productID', '$loggedInUserID', '$text', '$replyOfReviewID')";
+    $result = $con->query($sqlWriteReview);
+
+    header("Refresh:0");
 }
 
 
-function inputFunction($currentReviewID){
-    echo "<form action=\"\" method=\"post\">";
+// submit review FUNCTION
+function inputFunction($currentReviewID, $buttonName, $placeholder){
+    echo "<form action=\"\" method=\"post\" style=\"text-indent:30px;\">";
         echo "<input type='hidden' name='currentReviewID' value='$currentReviewID'/>";
-        echo "<input required type=\"text\" name=\"reviewText\" placeholder=\"Review...\">";
-        echo "<input type=\"submit\" name=\"writeReview\" value=\"WRITE REVIEW\"  class=\"button\">";
+        echo "<input required type=\"text\" name=\"reviewText\" placeholder=\"$placeholder\"  class=\"input-review\">";
+        echo "<input type=\"submit\" name=\"writeReview\" value=\"$buttonName\"  class=\"button\">";
     echo "</form>";
 }
 
 
-
-
-
 $con->close();
+
 ?>
 
 
@@ -172,6 +218,7 @@ $con->close();
     <body class="productInfo">
 <!--    TODO TO BE REMOVED-->
         <?php if($isLoggedIn){ ?>
+            <h1> Welcome <?php echo $loggedInUserName; ?>! </h1>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT" class="button">
             </form>
@@ -187,7 +234,12 @@ $con->close();
                 <div class="wrap-text">
                     Price: <?php echo $productPrice; ?> €<br>
                     Sold: <?php echo $productPurchasedCount; ?>x<br>
-                    Seller: <?php echo $productCreatorName; ?><a href="chat.php?id=<?php echo $productCreatorID  ?>">Start Chat</a><br>
+                    Seller: <?php echo $productCreatorName; ?>
+
+                    <?php if(!$isProductOwner){ ?>
+                    <a href="chat.php?id=<?php echo $productCreatorID  ?>">Start Chat</a><br>
+                    <?php } ?>
+
                     <?php if(!$isLoggedIn){ ?>
                         <p class="textPlain"> login to buy the product</p>
                         <a href="login.php">To login page</a>
@@ -205,63 +257,81 @@ $con->close();
         <div style="padding: 14px 16px;" class="reviews">
             <h2 class="title2"> Reviews </h2>
 
+
+
             <?php
-                if($nrReviews != 0) {
-                    $x = 0;
-                    $lastReviewID = 0;
-                    while ($x < $nrReviews) {
-                        $rowRR = mysqli_fetch_array($resultReview);
 
-                        if($rowRR['replyOfReviewID'] < $lastReviewID){
-                            if (!$isProductOwner) {
-                                echo "<p style=\"color: red\">". "C". inputFunction($lastReviewID). "</p><br/>";
-                            }
-                            else if($lastReviewID == $loggedInUserID) {
-                                echo "<p style=\"color: red\">" . "V". inputFunction($lastReviewID). "</p><br/>";
-                            }
+            mysqli_data_seek($resultReview, 0);     //resets fetched data pointer to 0
+
+            $currentBulkID = -1;
+            $rowRR = NULL;
+
+            if($nrReviews != 0){
+                $rowRR = mysqli_fetch_array($resultReview);
+                $currentBulkID = $rowRR['replyOfReviewID'];
+            }
+
+
+            //NEW REVIEW
+            if(!$isProductOwner){
+                echo "<p style=\"color: red\">" . inputFunction($currentBulkID+1, 'Submit Review', 'Add New Review...'). "</p><br/>";
+            }
+
+            //DISPLAY ALL REVIEWS
+            $x = 0;
+            while($x < $nrReviews){
+
+                //get Review User Name
+                $reviewerName = $positionNamesArray[$rowRR['userID']-1];
+                console_log( $x . " name: " . $reviewerName);
+
+                //DISPLAY BULK of REVIEWS
+                if($currentBulkID == $rowRR['replyOfReviewID']){
+                    if($productCreatorID != $rowRR['userID']){
+                        // Display 1st Review
+                        if($x == 0){
+                            echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>".$reviewerName . ":</i>" . "</span> ";
+                            echo "<div class='review-mix' >" . $rowRR['text'] . "</div>";
                         }
-
-                        if ($rowRR['replyOfReviewID'] == 0){
-                            echo "<br/><p>" . "START User Review" . $rowRR['text'] . "</p><br/>";
-
+                        //display next reviews
+                        else{
+                            echo "<div class='review-indent' >" . "<i class='reviewer-name'>" .$reviewerName . ": </i>" ."<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
                         }
-                        else {
-                            if($rowRR['replyOfReviewID'] != $loggedInUserID){
-                                echo "<p style=\"text-indent:10px;\">" . "User Review " . $rowRR['text'] . "</p><br/>";
-                            }
-                            else {
-                                echo "<p style=\"text-indent:10px;\">" . "Vendor Response " . $rowRR['text'] . "</p><br/>";
-                            }
-                        }
-                        $x = $x +1;
-                        $lastReviewID = $rowRR['replyOfReviewID'];
                     }
+                    //Display vendor response
+                    else {
+                        echo "<div class='review-indent' >". "Vendor " . "<i class='vendor-name'>".$reviewerName . ": </i>" ."<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
+                    }
+                }
+                else{
+                    //RESPOND to Review
+                    if(!$isProductOwner){
+                        echo "<p>" . inputFunction($currentBulkID, 'Submit Review', 'Respond to Review...'). "</p>";
+                    }
+                    else {
+                        echo "<p>" . inputFunction($currentBulkID, 'Submit Response', 'Respond to Review...'). "</p>";
+                    }
+                    //DISPLAY NEW BULK
+                    echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>".$reviewerName . ":</i>" . "</span> ";
+                    echo "<div class='review-mix' >" . $rowRR['text'] . "</div>";
 
-                    if (!$isProductOwner) {
-                        echo "<p style=\"color: red\">" . "C". inputFunction($lastReviewID). "</p><br/>";
-                    }
-                    else if($lastReviewID == $loggedInUserID){
-                        echo "<p style=\"color: red\">" ."V". inputFunction($lastReviewID) . "</p><br/>";
-                    }
-
+                    $currentBulkID--;
+                }
+                $x++;
+                $rowRR = mysqli_fetch_array($resultReview);
+            }
+            //RESPOND to last Review
+            if ($nrReviews > 0){
+                if(!$isProductOwner){
+                    echo "<p>" . inputFunction($currentBulkID, 'Submit Review', 'Respond to Review...'). "</p>";
                 }
                 else {
-                    echo "<p style=\"color: red\">" . "C". inputFunction(-1). "</p><br/>";
+                    echo "<p>" . inputFunction($currentBulkID, 'Submit Response', 'Respond to Review...'). "</p>";
                 }
+            }
+
             ?>
 
-            <?php if(!$isLoggedIn){ ?>
-                <p class="textPlain"> please log in to review the product</p>
-                <a href="login.php">To login page</a>
-            <?php } ?>
-
-            <?php if(!$isProductOwner && $isLoggedIn){ ?>
-                <p class="textPlain"> is customer -> can write review</p>
-            <?php } ?>
-
-            <?php if($isProductOwner && $isLoggedIn){ ?>
-                <p class="textPlain" style="color: red"> is vendor -> can respond to reviews</p>
-            <?php } ?>
         </div>
     </body>
 </html>

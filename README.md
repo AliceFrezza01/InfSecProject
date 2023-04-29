@@ -16,6 +16,10 @@ to access *MariaDB Monitor*: /Applications/XAMPP/xamppfiles/bin and type ./mysql
 
 set up live edit: Deployment + local or mounted folder -> Folder: htdocs, Web Server: http://localhost/infsec_project01
 
+
+#CSS not applying
+Browser Refresh -> CMD/CTRL + SHIFT + R
+
 #Console Log Function
 
 function console_log($output, $with_script_tags = true) {

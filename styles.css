@@ -53,6 +53,34 @@
 }
 
 
+/* Review  Styles*/
+.review-text{
+    color: dimgray;
+}
+
+.review-indent{
+    text-indent:30px;
+}
+
+.review-mix{
+    color: dimgray;
+    text-indent:30px;
+}
+
+.input-review{
+    border-width: 0 0 2px;
+    margin-right: 10px;
+    width: 310px;
+}
+.reviewer-name {
+    color: #669986;
+}
+
+.vendor-name{
+    color: #8282f1;
+}
+
+
 /*chat styling*/
 .ownwrittenmsg{
     background-color: #a9f9c1;
