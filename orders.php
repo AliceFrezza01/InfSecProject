@@ -17,7 +17,7 @@
     $search_result = $con->query("SELECT * FROM product
                         INNER JOIN purchasedby ON product.id=purchasedBy.productID 
                         WHERE product.creatorUserID=" . $vendorId . 
-                        " ORDER BY buyerdate DESC;");
+                        " ORDER BY buydate DESC;");
 
     $nr_results = $search_result->num_rows;
 ?>
