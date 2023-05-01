@@ -17,7 +17,7 @@
     $search_result = $con->query("SELECT * FROM product
                         INNER JOIN purchasedby ON product.id=purchasedBy.productID 
                         WHERE product.creatorUserID=" . $vendorId . 
-                        " ORDER BY buydate DESC;");
+                        " ORDER BY buyDate DESC;");
 
     $nr_results = $search_result->num_rows;
 ?>
@@ -78,7 +78,7 @@
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
                            echo "<td class=\"orderTable\">" . $row['name'] . "</td>";
                            echo "<td class=\"orderTable\">" . $row['price'] . "</td>";
-                           echo "<td class=\"orderTable\">" . $row['buydate'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $row['buyDate'] . "</td>";
                            echo "<td class=\"orderTable\">" . $rowNameBuyer['email'] . "</td>";
                        echo "</tr>";
                     }
