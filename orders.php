@@ -45,11 +45,11 @@
             <!-- product name, prezzo, date, name buyer of the orders -->
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Date of Purchacee</th>
-                    <th scope="col">Email of Buyer</th>
+                    <th scope="col" class="orderTable">#</th>
+                    <th scope="col" class="orderTable">Product Name</th>
+                    <th scope="col" class="orderTable">Price</th>
+                    <th scope="col" class="orderTable">Date of Purchacee</th>
+                    <th scope="col" class="orderTable">Email of Buyer</th>
                 </tr>
             </thead>
             <tbody>
@@ -58,7 +58,7 @@
                  if ($nr_results==0)
                     echo "<h3>Noone has purchased your items yet. Come back later.</h3>";
                  else {
-                    echo "<h3>List of your orders:</h3>";
+                    echo "<h3 class=\"orderTable\">List of your orders:</h3>";
                     for ($x = 0; $x < $nr_results; $x++) 
                     {
                        $row = mysqli_fetch_array($search_result);
@@ -69,10 +69,10 @@
 
                        echo "<tr>";
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
-                           echo "<td>" . $row['name'] . "</td>";
-                           echo "<td>" . $row['price'] . "</td>";
-                           echo "<td>" . $row['buyerdate'] . "</td>";
-                           echo "<td>" . $rowNameBuyer['email'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $row['name'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $row['price'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $row['buyerdate'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $rowNameBuyer['email'] . "</td>";
                        echo "</tr>";
                     }
                 }
