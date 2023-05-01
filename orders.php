@@ -8,6 +8,11 @@
 
     $vendorId = $_GET['vendorId'];
 
+    //is the user is a buyer, it should not be able to see its orders, since it has none
+    if ($user['isVendor']==0) {
+        header('location: landingPage.php');
+    }
+
     //this query shows all the orders that the sellers received from buyers
     $search_result = $con->query("SELECT * FROM product
                                     INNER JOIN purchasedby ON product.id=purchasedBy.productID WHERE product.creatorUserID=" . $vendorId . 

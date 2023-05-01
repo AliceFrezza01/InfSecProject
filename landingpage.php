@@ -42,7 +42,11 @@
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
-            <a href="orders.php?vendorId=<?php echo $userid ?>">Orders</a>
+            <?php
+                if ($user['isVendor']==1) {
+                    echo "<a href=\"orders.php?vendorId=<?php echo $userid ?>\">Orders</a>";
+                }
+            ?>
             <form style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
@@ -58,9 +62,13 @@
                 </form>
             </div>
             <!-- ADD NEW PRODUCT -->
-            <div style="margin-top: 25px">
-                <a href="productNew.php" class="addnewproduct">Add new Product</a>
-            </div>
+            <?php
+                if ($user['isVendor']==1) {
+                    echo "<div style=\"margin-top: 25px\">";
+                        echo "<a href=\"productNew.php\" class=\"addnewproduct\">Add new Product</a>";
+                    echo "</div>";
+                }
+            ?>
         </div>
         <!-- PRODUCT MENU -->
         <div class="container text-center">

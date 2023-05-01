@@ -3,32 +3,11 @@ session_start();
 ?>
 <?php
     include ('connect.php');
+    include ('authentificationUser.php');
 
-    //check if user is authenticated else redirect him to the login
-    if(!isset($_SESSION['loginsession'])){
-        header('location: login.php');
-    }
-
-    $userid = $_SESSION['loginsession'];
-    $userqueryresult = $con->query("SELECT * FROM user WHERE id = '$userid'");
-    if($userqueryresult->num_rows != 1){
-        //redirect also on login page because the userid does not exist or exists multiple times
-        header('location: login.php');
-    }
-
-    $user = $userqueryresult->fetch_assoc();
-
-    if (isset($_POST['sendForm'])) {
-        $name = $_POST['nameproduct'];
-        $price = $_POST['priceproduct'];
-        $link = $_POST['linkproduct'];
-        
-        $result = $con->query("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES ('$name',$price,'$link', $userid)");
-        if (!$result) {
-            echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
-        } else {
-            echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
-        }
+    //is the user is a buyer, it should not be able to add new products
+    if ($user['isVendor']==0) {
+        header('location: landingPage.php');
     }
 
     $con->close();
