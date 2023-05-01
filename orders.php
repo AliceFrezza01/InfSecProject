@@ -15,8 +15,10 @@
 
     //this query shows all the orders that the sellers received from buyers
     $search_result = $con->query("SELECT * FROM product
-                                    INNER JOIN purchasedby ON product.id=purchasedBy.productID WHERE product.creatorUserID=" . $vendorId . 
-                                    " ORDER BY buyerdate DESC;");
+                        INNER JOIN purchasedby ON product.id=purchasedBy.productID 
+                        WHERE product.creatorUserID=" . $vendorId . 
+                        " ORDER BY buyerdate DESC;");
+
     $nr_results = $search_result->num_rows;
 ?>
 
@@ -37,7 +39,6 @@
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
-            <a href="orders.php">Orders</a>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
@@ -46,10 +47,11 @@
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
             </div>
         </div>
+        <!-- TABLE OF ORDERS -->
         <table class="table">
-            <!-- product name, prezzo, date, name buyer of the orders -->
             <thead>
                 <tr>
+                    <!-- header of the table -->
                     <th scope="col" class="orderTable">#</th>
                     <th scope="col" class="orderTable">Product Name</th>
                     <th scope="col" class="orderTable">Price</th>
@@ -59,7 +61,6 @@
             </thead>
             <tbody>
                 <?php
-
                  if ($nr_results==0)
                     echo "<h3>Noone has purchased your items yet. Come back later.</h3>";
                  else {
@@ -72,6 +73,7 @@
                        $nameBuyer = $con->query("SELECT email FROM user WHERE id =" . $row['userID']);
                        $rowNameBuyer = mysqli_fetch_array($nameBuyer);
 
+                       //contect of the table: name, price, buyerdate and email of the buyer
                        echo "<tr>";
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
                            echo "<td class=\"orderTable\">" . $row['name'] . "</td>";

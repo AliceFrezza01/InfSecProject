@@ -43,8 +43,9 @@
             <a class="active" href="landingpage.php">Landing Page</a>
             <a href="#chat">Chat</a>
             <?php
+                //if the user is a buyer, it should not be able to see its orders
                 if ($user['isVendor']==1) {
-                    echo "<a href=\"orders.php?vendorId=<?php echo $userid ?>\">Orders</a>";
+                    echo "<a href=\"orders.php?vendorId=" . $userid . "\">Orders</a>";
                 }
             ?>
             <form style="padding: 14px 16px;" method='post'>

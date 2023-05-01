@@ -24,31 +24,26 @@ session_start();
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        <style>
-                div .greetings {
-                    color: white;
-                    font-size: 17px;
-                    font-family: 'Poppins', sans-serif;
-                    padding: 14px 16px;
-                }
-                .form {
-                    padding: 20px;
-                    font-family: 'Poppins', sans-serif;
-                }
-        </style>
     </head>
     <body>
         <!-- TOP MENU -->
         <div class="topnav">
-            <a class="active" href="./landingpage.php">Back To Landing Page</a>
-            <div class="greetings">Hello, <?php echo $user['name'] ?></div>
+            <a class="active" href="landingpage.php">Landing Page</a>
+            <a href="#chat">Chat</a>
+            <form action='' style="padding: 14px 16px;" method='post'>
+                <input type="submit" name="logout" value="LOG OUT">
+            </form>
+        </div>
+        <div class="headerHello">
+            <h1>Hello <b><?php echo $user['name'] ?></b></h1>
+            </div>
         </div>
         <!-- TITLE -->
         <div class="header form">
             <h1>Add A new Product</h1>
         </div>
         <!-- FORM -->
-        <form class="form" method='post'>
+        <form class="formAddNewProduct" method='post'>
             <div class="form-group">
                 <label for="inputEmail">Name product</label>
                 <input type="text" class="form-control" name="nameproduct" placeholder="Enter the name of the product">

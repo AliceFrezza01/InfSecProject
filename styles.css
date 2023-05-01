@@ -164,3 +164,15 @@ div input[type=text] {
 .orderTable {
     font-family: 'Poppins', sans-serif;
 }
+
+/* Css for product new */
+div .greetings {
+    color: white;
+    font-size: 17px;
+    font-family: 'Poppins', sans-serif;
+    padding: 14px 16px;
+}
+.formAddNewProduct {
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+}
