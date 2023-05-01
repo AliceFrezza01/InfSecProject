@@ -78,7 +78,7 @@
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
                            echo "<td class=\"orderTable\">" . $row['name'] . "</td>";
                            echo "<td class=\"orderTable\">" . $row['price'] . "</td>";
-                           echo "<td class=\"orderTable\">" . $row['buyerdate'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $row['buydate'] . "</td>";
                            echo "<td class=\"orderTable\">" . $rowNameBuyer['email'] . "</td>";
                        echo "</tr>";
                     }
