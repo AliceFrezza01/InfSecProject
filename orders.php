@@ -6,6 +6,9 @@
     include ('connect.php');
     include ('authentificationUser.php');
 
+    global $con;
+    global $user;
+
     $vendorId = $_GET['vendorId'];
 
     //is the user is a buyer, it should not be able to see its orders, since it has none
@@ -38,14 +41,14 @@
         <!-- TOP MENU -->
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
-            <a href="#chat">Chat</a>
+<!--            TODO Fix Path to Chat-->
+            <a href="chat.php">Chat</a>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
         </div>
         <div class="headerHello">
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
-            </div>
         </div>
         <!-- TABLE OF ORDERS -->
         <table class="table">

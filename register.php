@@ -3,6 +3,8 @@ session_start();
 
 include 'connect.php';
 
+global $con;
+
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
     header('location: landingpage.php');

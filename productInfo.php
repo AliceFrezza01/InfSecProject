@@ -9,8 +9,6 @@ ini_set( 'display_errors', true );
 include 'connect.php';
 
 global $con;
-//TODO manage in browser back button
-
 
 //count ALL Products!
 $sqlAllProducts = "SELECT COUNT(*) AS count FROM product;";
@@ -27,7 +25,6 @@ $productID = $_GET['productId'];
 if($productID == NULL || $nrAllProducts < $productID) {
     header('location: landingpage.php');
 }
-
 
 
 //DB Calls for Product
@@ -195,6 +192,25 @@ function inputFunction($currentReviewID, $buttonName, $placeholder){
     echo "</form>";
 }
 
+//chat link or Text
+function chatLink($loggedInUserID, $currentUserID, $reviewerName, $productCreatorID){
+    $setColor = NULL ;
+
+    if ($currentUserID == $productCreatorID){
+        $setColor = '#8282f1';
+    }
+    else {
+        $setColor = '#669986';
+    }
+
+    if ($loggedInUserID == $currentUserID){
+        echo "$reviewerName";
+    }
+    else {
+        echo "<a style='color: $setColor' href='chat.php?id=$currentUserID'>" . "$reviewerName" ."</a>";
+    }
+}
+
 
 $con->close();
 
@@ -290,17 +306,24 @@ $con->close();
                     if($productCreatorID != $rowRR['userID']){
                         // Display 1st Review
                         if($x == 0){
-                            echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>".$reviewerName . ":</i>" . "</span> ";
+                            echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>";
+                            chatLink($loggedInUserID, $rowRR['userID'], $reviewerName, $productCreatorID);
+                            echo "</i> : " . "</span>";
                             echo "<div class='review-mix' >" . $rowRR['text'] . "</div>";
                         }
                         //display next reviews
                         else{
-                            echo "<div class='review-indent' >" . "<i class='reviewer-name'>" .$reviewerName . ": </i>" ."<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
+                            echo "<div class='review-indent' >" . "<i class='reviewer-name'>";
+                            chatLink($loggedInUserID, $rowRR['userID'], $reviewerName, $productCreatorID);
+                            echo "</i> : ";
+                            echo "<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
                         }
                     }
                     //Display vendor response
                     else {
-                        echo "<div class='review-indent' >". "Vendor " . "<i class='vendor-name'>".$reviewerName . ": </i>" ."<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
+                        echo "<div class='review-indent' >". "Vendor " . "<i class='vendor-name'>";
+                        chatLink($loggedInUserID, $rowRR['userID'], $reviewerName, $productCreatorID);
+                        echo "</i> : " ."<span class='review-text'>" . $rowRR['text'] . "</span> " ."</div>";
                     }
                 }
                 else{
@@ -312,7 +335,9 @@ $con->close();
                         echo "<p>" . inputFunction($currentBulkID, 'Submit Response', 'Respond to Review...'). "</p>";
                     }
                     //DISPLAY NEW BULK
-                    echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>".$reviewerName . ":</i>" . "</span> ";
+                    echo "<span class='review-indent'>" . "Review by User " . "<i class='reviewer-name'>";
+                    chatLink($loggedInUserID, $rowRR['userID'], $reviewerName, $productCreatorID);
+                    echo "</i> : " . "</span> ";
                     echo "<div class='review-mix' >" . $rowRR['text'] . "</div>";
 
                     $currentBulkID--;

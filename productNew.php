@@ -5,6 +5,9 @@ session_start();
     include ('connect.php');
     include ('authentificationUser.php');
 
+    global $con;
+    global $user;
+
     //is the user is a buyer, it should not be able to add new products
     if ($user['isVendor']==0) {
         header('location: landingPage.php');
@@ -14,7 +17,7 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
     <head>
         <title>Add Product Page</title>
         <meta charset="utf-8">
@@ -29,14 +32,14 @@ session_start();
         <!-- TOP MENU -->
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
-            <a href="#chat">Chat</a>
+<!--            TODO add correct chat path -->
+            <a href="chat.php">Chat</a>
             <form action='' style="padding: 14px 16px;" method='post'>
                 <input type="submit" name="logout" value="LOG OUT">
             </form>
         </div>
         <div class="headerHello">
             <h1>Hello <b><?php echo $user['name'] ?></b></h1>
-            </div>
         </div>
         <!-- TITLE -->
         <div class="header form">

@@ -40,3 +40,19 @@ function input($data) {
     $data = htmlspecialchars($data);
     return $data;
 }
+
+
+# Insecure Version Description
+
+## SQL Injection
+## XSS Reflection
+## XSS Storing
+## XSRF
+## Intercepting Chat Messages
+## Password Attacks (Burp Intruder)
+## Additional Vulnerabilities
+
+## ProductInfo Page
+Found vulnerabilities due to input fields in the Review:
+- SQL Injection
+- XSS Reflection

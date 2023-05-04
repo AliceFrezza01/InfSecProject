@@ -1,4 +1,7 @@
-<?php 
+<?php
+
+    global $con;
+
     if(!isset($_SESSION['loginsession'])){
         header('location: login.php');
     }

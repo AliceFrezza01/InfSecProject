@@ -6,6 +6,10 @@
     include ('connect.php');
     include ('authentificationUser.php');
 
+    global $con;
+    global $user;
+    global $userid;
+
     $lowerStringInserted = "";
     //function for the search button
     if (isset($_POST['search'])) {
@@ -41,7 +45,8 @@
         <!-- TOP MENU -->
         <div class="topnav">
             <a class="active" href="landingpage.php">Landing Page</a>
-            <a href="#chat">Chat</a>
+<!--            TODO pass current user var  -->
+            <a href="chat.php">Chat</a>
             <?php
                 //if the user is a buyer, it should not be able to see its orders
                 if ($user['isVendor']==1) {
@@ -87,7 +92,7 @@
                                     echo "<div class='container-fluid'>";
                                         echo "<b>" . $row['name'] . "</b><br/>";
                                         echo $row['price'] . "€";
-                                        echo "<br/><img src='" . $row['imgLink'] . "' height=\"100\" />";
+                                        echo "<br/><img alt='\"Product\"' src='" . $row['imgLink'] . "' height=\"100\" />";
                                     echo "</div>";
                                 echo "</a></div>";
 
@@ -96,7 +101,6 @@
                     echo "</div>";
                 }
             ?>
-            </div>
         </div>
     </body>
 </html>

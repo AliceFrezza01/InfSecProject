@@ -5,6 +5,8 @@ session_start();
 
 include ('connect.php');
 
+global $con;
+
 if(!isset($_SESSION['loginsession'])){
     header('location: login.php');
 }
@@ -85,7 +87,7 @@ if(isset($_GET['id'])){
 <!--HTML CODE-->
 
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="UTF-8">
     <title>Chat</title>

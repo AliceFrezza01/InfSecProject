@@ -2,6 +2,9 @@
 session_start();
 
 include ('connect.php');
+
+global $con;
+
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
     header('location: landingpage.php');
@@ -39,7 +42,7 @@ $con->close();
 <!--HTML CODE-->
 
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
