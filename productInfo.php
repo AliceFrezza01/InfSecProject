@@ -7,8 +7,9 @@ ini_set( 'display_errors', true );
 
 //imports
 include 'connect.php';
-
+include ('authentificationUser.php');
 global $con;
+global $user;
 
 //count ALL Products!
 $sqlAllProducts = "SELECT COUNT(*) AS count FROM product;";
@@ -224,24 +225,11 @@ $con->close();
 
 <!DOCTYPE html>
 <html lang="en-us">
-    <head>
-        <meta charset="UTF-8">
-        <title>Product Info: <?php echo $productName; ?>  </title>
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <link rel="stylesheet" href="styles.css">
-    </head>
+<?php include('head.php') ?>
 
-    <body class="productInfo">
-<!--    TODO TO BE REMOVED-->
-        <?php if($isLoggedIn){ ?>
-            <h1> Welcome <?php echo $loggedInUserName; ?>! </h1>
-            <form action='' style="padding: 14px 16px;" method='post'>
-                <input type="submit" name="logout" value="LOG OUT" class="button">
-            </form>
-        <?php } ?>
-        <form action='' style="padding: 14px 16px;" method='post'>
-            <input type="submit" name="back" value="BACK" class="button">
-        </form>
+    <body>
+     <?php include('menu.php') ?>
+     <div class="productInfo">
 <!--    DISPLAY PRODUCT-->
         <div style="padding: 14px 16px;">
             <h1 class="title1"> <?php echo $productName; ?> </h1>
@@ -358,5 +346,6 @@ $con->close();
             ?>
 
         </div>
+     </div>
     </body>
 </html>

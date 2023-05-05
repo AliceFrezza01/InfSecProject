@@ -43,18 +43,12 @@ $con->close();
 
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="styles.css">
-</head>
+<?php include('head.php') ?>
 <body>
-    <div>
+    <div class="logindiv">
         <h1> Login </h1>
         <form action="" method="post">
-            <p>Email</p>
+            <p >Email</p>
             <input required type="text" name="user" >
             <p>Password</p>
             <input required type="password" name="password" >

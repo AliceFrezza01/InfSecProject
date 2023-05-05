@@ -1,10 +1,81 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+/* general */
+body{
+    margin:0;
+    padding: 0;
+}
+
+.button {
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    color: #3D3D3D;
+    background: #d7d6d6;
+    border: #000000;
+    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1);
+}
+.button:focus {
+    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), 0 0 0 3.5px rgba(58, 108, 217, 0.5);
+    outline: 0;
+}
+.button:hover {
+    color: #f8f8f8;
+}
+
+/*login and register*/
+.logindiv{
+    padding: 20px;
+}
+.logindiv p{
+    margin-bottom: 0;
+    margin-top: 20px;
+}
+
+/* Nav Bar Css */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    font-family: 'Poppins', sans-serif;
+    top:0;
+}
+
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav a.active {
+    background-color: blue;
+    color: white;
+}
+
+.headerHello {
+    padding: 80px 30px 30px;
+    background-color: gray;
+    font-family: 'Poppins', sans-serif;
+}
+
+/*product info page*/
+
 .productInfo {
     background-color: white;
     font-family: 'Poppins', sans-serif;
     margin-left: 20px;
     padding-left: 20px;
+    padding-top: 70px;
 }
 .title1 {
     color: black;
@@ -30,22 +101,7 @@
     justify-content: center;
 }
 
-.button {
-    align-items: center;
-    padding: 6px 14px;
-    border-radius: 6px;
-    color: #3D3D3D;
-    background: #d7d6d6;
-    border: #000000;
-    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1);
-}
-.button:focus {
-    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), 0 0 0 3.5px rgba(58, 108, 217, 0.5);
-    outline: 0;
-}
-.button:hover {
-    color: #f8f8f8;
-}
+
 
 .display-flex{
     display: flex;
@@ -91,36 +147,7 @@
    margin-left:10px;
 }
 
-/* Nav Bar Css */
-.topnav {
-    background-color: #333;
-    overflow: hidden;
-}
 
-.topnav a {
-    float: left;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.topnav a:hover {
-    background-color: #ddd;
-    color: black;
-}
-
-.topnav a.active {
-    background-color: blue;
-    color: white;
-}
-
-.headerHello {
-    background-color: gray;
-    font-family: 'Poppins', sans-serif;
-}
 
  /* Css for landing page */
  .container-fluid {
@@ -134,9 +161,8 @@
     background-color: #FCFF9E;
 }
 
-div input[type=text] {
+div input {
     padding: 6px;
-    border: none;
     margin-top: 8px;
     margin-right: 5px;
     font-size: 17px;
@@ -153,15 +179,11 @@ div input[type=text] {
     text-decoration: none;
 }
 
-.addnewproduct {
-    color: black;
-    background-color: white;
-    border-style: solid;
-    border-width: 1px;
-}
+
 
  /* Css for order page */
 .orderTable {
+    padding: 20px 0;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -173,6 +195,6 @@ div .greetings {
     padding: 14px 16px;
 }
 .formAddNewProduct {
-    padding: 20px;
+    padding: 20px 0;
     font-family: 'Poppins', sans-serif;
 }

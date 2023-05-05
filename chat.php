@@ -4,20 +4,11 @@ session_start();
 <?php
 
 include ('connect.php');
+include ('authentificationUser.php');
 
 global $con;
+global $user;
 
-if(!isset($_SESSION['loginsession'])){
-    header('location: login.php');
-}
-$userid = $_SESSION['loginsession'];
-$userqueryresult = $con->query("SELECT * FROM user WHERE id = '$userid'");
-if($userqueryresult->num_rows != 1){
-    //redirect also on login page because the userid does not exist or exists multiple times
-    header('location: login.php');
-}
-
-$user = $userqueryresult->fetch_assoc();
 
 //get all chets
 $chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE recieverUserID = '$userid' or senderUserID = '$userid' order by id desc");
@@ -88,17 +79,12 @@ if(isset($_GET['id'])){
 
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <meta charset="UTF-8">
-    <title>Chat</title>
-
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="styles.css">
-</head>
+<?php include('head.php') ?>
 <body>
 <div>
-    <h1> Chat </h1>
-    <div style="display: flex">
+    <?php include('menu.php') ?>
+
+    <div style="display: flex; padding-top: 70px; padding-left: 20px;">
         <div style="width: 200px;  background-color: #cecece; height: calc(100vh - 230px); overflow-y: scroll; overflow-x: hidden;">
             <?php
             foreach ($userchatcreated as $key=>$userch){
