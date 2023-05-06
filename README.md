@@ -1,8 +1,6 @@
 # InfSecProject
 
 
-
-
 #SOLUTIONS for SETUP Issues
 if SQL Database does not restart -> kill in Activity Monitor search for _mysql
 
@@ -19,8 +17,6 @@ set up live edit: Deployment + local or mounted folder -> Folder: htdocs, Web Se
 
 #CSS not applying
 Browser Refresh -> CMD/CTRL + SHIFT + R
-
-
 
 # Insecure Version Description
 
@@ -44,3 +40,50 @@ Found vulnerabilities due to input fields in the Review:
 ## Chat Page
 Found vulnerabilities due to input fields in the Review:
 - SQL Injection
+
+## Landing Page
+Found vulnerabilities due to input fields for filtering the products:
+- SQL Injection. It is possible but does not make sense:
+    ```
+    abcdefg%' OR 1=1 -- 
+    ```
+
+## Order Page
+Found vulnerabilities due to:
+- there is no check ensuring that a user sees only its orders
+    ``` sql 
+    http://localhost/InfSecProject/orders.php?vendorId=...
+    -- One could insert any value as vendorId
+    ```
+- sql injection.
+    - not dangeours
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20--
+        -- This url does not order the orders
+        ```
+    - dangerous
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20OR%201=1%20--
+        -- This url allows to see all the orders done by everyone
+        ```
+
+## Add New Product
+Found vulnerabilities due to the three input fields to add a product :
+- XSS Stored, working then on Landing Page.
+    One could enter as values of the new product a script, like the following:
+    ``` js 
+    <script>alert("I am an attacker")</script>
+    ```
+
+# Notes
+
+- In order to perform multiple queries in one statement, PHP requires to use the function :
+    ``` php
+    public mysqli::multi_query(string $query): bool
+    ```
+    Throughout our project we only used: 
+    ``` php
+    public mysqli::query(string $query, int $result_mode = MYSQLI_STORE_RESULT): mysqli_result|bool
+    ```
+    Therefore we don't need to worry about sql injection attacks which are based on executing multiple queries at the same time. 
+    However the developer should be careful about the possibility of attacks based on JOIN. 

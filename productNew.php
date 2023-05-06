@@ -13,6 +13,20 @@ session_start();
         header('location: landingPage.php');
     }
 
+    //this query adds the new product
+    if (isset($_POST['sendForm'])) {
+        $name = $_POST['nameproduct'];
+        $price = $_POST['priceproduct'];
+        $link = $_POST['linkproduct'];
+
+        $result = $con->query("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES ('$name',$price,'$link', $userid)");
+        if (!$result) {
+            echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
+        } else {
+            echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
+        }
+    }
+
     $con->close();
 ?>
 
