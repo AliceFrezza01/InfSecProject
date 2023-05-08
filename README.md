@@ -35,11 +35,21 @@ Found vulnerabilities due to input fields in the Review:
 
 ## Login and Register Page
 Found vulnerabilities due to input fields in the Review:
-- SQL Injection
+- SQL Injection 
+  For example insert in the username field the following query 
+  to login with a certain account and without knowing the password
+    ```
+    carlo@gmail.com'#
+    ```
 
 ## Chat Page
 Found vulnerabilities due to input fields in the Review:
-- SQL Injection
+- SQL Injections in the chatmessage input field
+- XSS stored
+  For example add a script into the chat field, so if the person who the chatmessage was sendet opens the chat, this script will be executed
+   ``` js 
+    <script>alert("I am an attacker")</script>
+    ```
 
 ## Landing Page
 Found vulnerabilities due to input fields for filtering the products:
