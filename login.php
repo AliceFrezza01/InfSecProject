@@ -18,18 +18,23 @@ if(isset($_POST['login'])){
 
     //check if login is correct
 
-    //todo for the secure version
-    /*$search_user = $con->prepare("SELECT * FROM user WHERE email = ? AND password = ?");
-    $search_user->bind_param('ss',$username,$password);
+    $search_user = $con->prepare("SELECT * FROM user WHERE email = ?");
+    $search_user->bind_param('s',$username);
     $search_user->execute();
-    $search_result =$search_user->get_result();*/
-
-    $search_result = $con->query("SELECT * FROM user WHERE email = '$username' AND password = '$password'");
+    $search_result =$search_user->get_result();
 
     if($search_result->num_rows == 1){
         $search_object = $search_result->fetch_object();
-        $_SESSION['loginsession'] = $search_object->id;
-        header('location: landingpage.php');
+        $salt = $search_object->salt;
+        $concat = $password . $salt;
+        $password = hash('sha384', $concat);
+        echo $password;
+        if($password == $search_object->password){
+            $_SESSION['loginsession'] = $search_object->id;
+            header('location: landingpage.php');
+        }else{
+            echo('<p style="color:red">Wrong data</p>');
+        }
     }else{
         echo('<p style="color:red">Wrong data</p>');
     }
