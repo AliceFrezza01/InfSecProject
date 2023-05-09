@@ -28,7 +28,6 @@ if(isset($_POST['login'])){
         $salt = $search_object->salt;
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
-        echo $password;
         if($password == $search_object->password){
             $_SESSION['loginsession'] = $search_object->id;
             header('location: landingpage.php');

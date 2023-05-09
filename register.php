@@ -33,7 +33,6 @@ if(isset($_POST['register'])){
         }
         $salt = lcg_value();
         $concat = $password . $salt;
-        echo $concat . '<br>';
         $password = hash('sha384', $concat);
         $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', '$salt')");
         if (!$result) {
