@@ -34,6 +34,7 @@ if(isset($_POST['register'])){
             $isVendor = 0;
         }
         $salt = lcg_value();
+        $salt = intval($salt*10000);
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
 
