@@ -1,6 +1,7 @@
 TRUNCATE TABLE user;
 TRUNCATE TABLE product;
 TRUNCATE TABLE purchasedby;
+TRUNCATE TABLE review;
 
 -- Buyers
 INSERT INTO user(email, password, salt, name, isVendor)
@@ -185,6 +186,62 @@ INSERT INTO purchasedby(productId, userId, buyDate) VALUES (4, 9, '2026-06-30 09
 INSERT INTO purchasedby(productId, userId, buyDate) VALUES (2, 3, '2026-07-05 12:45:00');
 
 INSERT INTO purchasedby(productId, userId, buyDate) VALUES (10, 7, '2026-08-10 15:30:00');
+
+-- Reviews
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("is this product new?", 0, 2, 10);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product available in other colors?", 0, 9, 5);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("How long does it take to charge?", 0, 6, 8);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Does this product come with a warranty?", 0, 12, 2);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product easy to assemble?", 0, 1, 14);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("How many sizes does this product come in?", 0, 4, 18);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product durable?", 0, 11, 7);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product dishwasher safe?", 0, 8, 12);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the weight of this product?", 0, 2, 10);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Does this product have any harmful chemicals?", 0, 10, 17);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the maximum weight limit for this product?", 0, 3, 6);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Does this product come with a user manual?", 0, 5, 11);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product suitable for outdoor use?", 0, 13, 1);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the warranty period for this product?", 0, 7, 13);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product easy to clean?", 0, 9, 8);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the material of this product?", 0, 6, 14);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product BPA-free?", 0, 1, 5);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the capacity of this product?", 0, 4, 2);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product suitable for a certain age group?", 0, 11, 14);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the size of this product?", 0, 8, 18);
+
+-- Responses to review
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Yes, mine was new", 1, 3, 10);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Good to know", 1, 2, 10);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("3: 32 and 42", 2, 8, 18);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Around 1 hour", 4, 5, 8);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Yes, garranty of 1 year", 4, 11, 2);
+
+INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product easy to assemble?", 6, 1, 14);
 
 UPDATE user SET
     salt = cast(RAND()*10000 as decimal(4,0));

@@ -24,16 +24,10 @@ if(isset($_POST['login'])){
     $search_result =$search_user->get_result();
 
     if($search_result->num_rows == 1){
-        echo $password, $username; echo "<br>";
         $search_object = $search_result->fetch_object();
         $salt = $search_object->salt;
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
-        //psw_carlo0.95518044936953
-        //         0.9551804493695315
-        echo $concat; echo "<br>";
-        echo $password; echo "<br>";
-        echo $search_object->password;
         if($password == $search_object->password){
             $_SESSION['loginsession'] = $search_object->id;
             header('location: landingpage.php');
