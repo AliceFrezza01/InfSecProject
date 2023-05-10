@@ -185,9 +185,3 @@ INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (4, 9, '2026-06-30 
 INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (2, 3, '2026-07-05 12:45:00');
 
 INSERT INTO purchasedby(productId, userId, buyerdate) VALUES (10, 7, '2026-08-10 15:30:00');
-
-UPDATE user SET
-    salt = cast(RAND()*10000 as decimal(4,0));
-
-UPDATE user SET
-    password = SHA2(CONCAT(password, salt), 384);
