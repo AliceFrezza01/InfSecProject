@@ -29,6 +29,8 @@ if(isset($_POST['login'])){
         $salt = $search_object->salt;
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
+        //psw_carlo0.95518044936953
+        //         0.9551804493695315
         echo $concat; echo "<br>";
         echo $password; echo "<br>";
         echo $search_object->password;
