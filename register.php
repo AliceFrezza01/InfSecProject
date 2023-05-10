@@ -19,10 +19,12 @@ if(isset($_POST['register'])){
     $password = input($_POST['password']);
 
     //check if user already exists
-//    $con = NULL;
-    $search_result = $con->query("SELECT * FROM user WHERE email = '$username'");
+    $search_result = $con->prepare("SELECT * FROM user WHERE email=?");
+    $search_result->bind_param('s', $username);
+    $search_result->execute();
+    $result = $search_result->get_result();
 
-    if($search_result->num_rows == 1){
+    if($result->num_rows == 1){
         echo('<p style="color:red">User with this email already exists</p>');
     }else{
         //create new user
@@ -35,8 +37,12 @@ if(isset($_POST['register'])){
         $salt = intval($salt*10000);
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
-        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', '$salt')");
-        if (!$result) {
+
+        $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES (?,?,?,?,?)");
+        $insertion_query->bind_param('sssii', $name, $user, $password, $isVendor, $salt);
+        $insertion_query->execute();
+
+        if ($insertion_query->affected_rows != 1) {
             echo('<p style="color:red">Error creating user</p>');
         } else {
             $createduserid = mysqli_insert_id($con);

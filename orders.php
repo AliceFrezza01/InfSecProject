@@ -17,12 +17,14 @@
     }
 
     //this query shows all the orders that the sellers received from buyers
-    $search_result = $con->query("SELECT * FROM product
+    $search_result = $con->prepare("SELECT * FROM product
                         INNER JOIN purchasedby ON product.id=purchasedBy.productID 
-                        WHERE product.creatorUserID=" . $vendorId . 
-                        " ORDER BY buyDate DESC;");
+                        WHERE product.creatorUserID=? ORDER BY buyDate DESC;");
+    $search_result->bind_param('i', $userid);
+    $search_result->execute();
+    $result = $search_result->get_result();
 
-    $nr_results = $search_result->num_rows;
+    $nr_results = $result->num_rows;
 ?>
 
 <!DOCTYPE html>
@@ -57,11 +59,14 @@
                     echo "<h3 class=\"orderTable\">List of your orders:</h3>";
                     for ($x = 0; $x < $nr_results; $x++) 
                     {
-                       $row = mysqli_fetch_array($search_result);
+                        $row = $result->fetch_assoc();
    
                        //this query retrieves the email address of the buyer starting from its ID
-                       $nameBuyer = $con->query("SELECT email FROM user WHERE id =" . $row['userID']);
-                       $rowNameBuyer = mysqli_fetch_array($nameBuyer);
+                       $nameBuyer = $con->prepare("SELECT email FROM user WHERE id =?");
+                       $nameBuyer->bind_param('i', $row['userID']);
+                       $nameBuyer->execute();
+                       $nameBuyer = $nameBuyer->get_result();
+                       $rowNameBuyer = $nameBuyer->fetch_assoc();
 
                        //contect of the table: name, price, buyerdate and email of the buyer
                        echo "<tr>";

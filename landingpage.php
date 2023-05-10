@@ -11,6 +11,7 @@
     global $userid;
 
     $lowerStringInserted = "";
+
     //function for the search button
     if (isset($_POST['search'])) {
         $lowerStringInserted = $_POST['toSearch'];
@@ -22,8 +23,13 @@
     }
 
     //this query returns the list of products with a name similar at the one inserted by the user in the search bar
-    $search_result = $con->query("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE '%$lowerStringInserted%'");
-    $nr_results = $search_result->num_rows;
+    $searchString = "%$lowerStringInserted%";
+    $search_result = $con->prepare("SELECT id, name, price, imgLink FROM PRODUCT WHERE LOWER(name) LIKE ?");
+    $search_result->bind_param('s', $searchString);
+    $search_result->execute();
+    $result = $search_result->get_result();
+        
+    $nr_results = $result->num_rows;
     $rows_needed = ceil($nr_results/3);
 
     $con->close();
@@ -64,7 +70,7 @@
                     echo "<div class='row'>";
                         for ($y = 0; $y<3; $y++) 
                         {
-                            $row = mysqli_fetch_array($search_result);
+                            $row = $result->fetch_assoc();
                             if ($row!=null) {
                                 echo "<div class='col'>";
                                 //sending the Id of the product through the link to productInfo

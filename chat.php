@@ -9,12 +9,17 @@ include ('authentificationUser.php');
 global $con;
 global $user;
 
+//prepared query: get all chats
+$chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE recieverUserID =? or senderUserID =? order by id desc");
+$chatqueryresult->bind_param('ii', $userid, $userid);
+$chatqueryresult->execute();
+$chatqueryresult = $chatqueryresult->get_result();
 
-//get all chets
-$chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE recieverUserID = '$userid' or senderUserID = '$userid' order by id desc");
 $userchatcreated = array();
+
 if ($chatqueryresult->num_rows > 0) {
     while ($r = $chatqueryresult->fetch_assoc()) {
+
         if($r['senderUserID'] != $userid){
             $otheruserofchatid = null;
             if(!array_key_exists($r['senderUserID'], $userchatcreated)){
@@ -25,8 +30,15 @@ if ($chatqueryresult->num_rows > 0) {
                 $otheruserofchatid=$r['recieverUserID'];
             }
         }
+
         if($otheruserofchatid != null){
-            $otheruserqueryresult = $con->query("SELECT * FROM user WHERE id = '$otheruserofchatid'");
+
+            //prepared query
+            $otheruserqueryresult = $con->prepare("SELECT * FROM user WHERE id=?");
+            $otheruserqueryresult->bind_param('i', $otheruserofchatid);
+            $otheruserqueryresult->execute();
+            $otheruserqueryresult = $otheruserqueryresult->get_result();
+
             if($otheruserqueryresult->num_rows == 1){
                 $otheruserofchat = $otheruserqueryresult->fetch_assoc();
                 $userchatcreated[$otheruserofchatid]= array('name'=>$otheruserofchat['name'], 'date'=>$r['date']);
@@ -41,15 +53,24 @@ $chatmsg = array();
 $chatwithusername = null;
 if(isset($_GET['id'])){
     $chatwithuserid = $_GET['id'];
-    //get name of user we chat with
-    $userofchatquery = $con->query("SELECT * FROM user WHERE id = '$chatwithuserid'");
+
+    //prepared query: get name of user we chat with
+    $userofchatquery = $con->prepare("SELECT * FROM user WHERE id=?");
+    $userofchatquery->bind_param('i', $chatwithuserid);
+    $userofchatquery->execute();
+    $userofchatquery = $userofchatquery->get_result();
+
     if($userofchatquery->num_rows == 1){
         $userofchat = $userofchatquery->fetch_assoc();
         $chatwithusername = $userofchat['name'];
     }
 
-    //get all messages with this user
-    $chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE (recieverUserID = '$userid' and senderUserID = '$chatwithuserid') or (recieverUserID = '$chatwithuserid' and senderUserID = '$userid')");
+    //prepared query: get all messages with this user
+    $chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE (recieverUserID =? and senderUserID=?) or (recieverUserID =? and senderUserID =?)");
+    $chatqueryresult->bind_param('iiii', $userid, $chatwithuserid, $chatwithuserid, $userid);
+    $chatqueryresult->execute();
+    $chatqueryresult = $chatqueryresult->get_result();
+
     if ($chatqueryresult->num_rows > 0) {
         while ($r = $chatqueryresult->fetch_assoc()) {
             if($r['senderUserID'] == $userid){
@@ -65,7 +86,12 @@ if(isset($_GET['id'])){
     if(isset($_POST['sendmsg'])){
         $message = input($_POST['msgtext']);
         $date = date('Y-m-d H:i:s');
-        $result = $con->query("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES ('$message','$date','$chatwithuserid','$userid')");
+
+        //prepared query: insert a text message
+        $result = $con->prepare("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES (?,?,?,?)");
+        $result->bind_param('sssi', $message, $date, $chatwithuserid, $userid);
+        $result->execute();
+    
         header("Refresh:0");
     }
 }
