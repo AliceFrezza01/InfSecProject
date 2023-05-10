@@ -229,20 +229,6 @@ INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this pr
 
 INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("What is the size of this product?", 0, 8, 18);
 
--- Responses to review
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Yes, mine was new", 1, 3, 10);
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Good to know", 1, 2, 10);
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("3: 32 and 42", 2, 8, 18);
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Around 1 hour", 4, 5, 8);
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Yes, garranty of 1 year", 4, 11, 2);
-
-INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product easy to assemble?", 6, 1, 14);
-
 -- SQL Statement to update the passwords with the salt
 
 UPDATE user SET
