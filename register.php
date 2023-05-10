@@ -34,8 +34,12 @@ if(isset($_POST['register'])){
         $salt = lcg_value();
         $concat = $password . $salt;
         $password = hash('sha384', $concat);
-        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', '$salt')");
-        if (!$result) {
+
+        $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES (?,?,?,?,?)");
+        $insertion_query->bind_param('sssii', $name, $user, $password, $isVendor, $salt);
+        $insertion_query->execute();
+        
+        if ($insertion_query->affected_rows != 1) {
             echo('<p style="color:red">Error creating user</p>');
         } else {
             $createduserid = mysqli_insert_id($con);

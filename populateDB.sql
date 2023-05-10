@@ -243,6 +243,8 @@ INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Yes, garra
 
 INSERT INTO review(text, replyOfReviewID, userID, productID) VALUES ("Is this product easy to assemble?", 6, 1, 14);
 
+-- SQL Statement to update the passwords with the salt
+
 UPDATE user SET
     salt = cast(RAND()*10000 as decimal(4,0));
 
