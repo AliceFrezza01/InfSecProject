@@ -62,8 +62,11 @@
                         $row = $result->fetch_assoc();
    
                        //this query retrieves the email address of the buyer starting from its ID
-                       $nameBuyer = $con->query("SELECT email FROM user WHERE id =" . $row['userID']);
-                       $rowNameBuyer = mysqli_fetch_array($nameBuyer);
+                       $nameBuyer = $con->prepare("SELECT email FROM user WHERE id =?");
+                       $nameBuyer->bind_param('i', $row['userID']);
+                       $nameBuyer->execute();
+                       $nameBuyer = $nameBuyer->get_result();
+                       $rowNameBuyer = $nameBuyer->fetch_assoc();
 
                        //contect of the table: name, price, buyerdate and email of the buyer
                        echo "<tr>";

@@ -29,9 +29,12 @@ if($productID == NULL || $nrAllProducts < $productID) {
 
 
 //DB Calls for Product
-$sqlProduct = "SELECT name, price, imgLink, creatorUserID FROM product WHERE id = '$productID'";
-$result = $con->query($sqlProduct);
-$row = mysqli_fetch_array($result);
+$sqlProduct = "SELECT name, price, imgLink, creatorUserID FROM product WHERE id =?";
+$result = $con->prepare($sqlProduct);
+$result->bind_param('i', $productID);
+$result->execute();
+$result = $result->get_result();
+$row = $result->fetch_assoc();
 
 $productName = $row['name'];
 $productPrice = $row['price'];
@@ -41,16 +44,22 @@ $productCreatorID = $row['creatorUserID'];
 console_log('Product Creator ID: ' . $productCreatorID);
 
 //DB calls for Product Creator Details
-$sqlCreator = "SELECT name, email FROM user WHERE id = '$productCreatorID'";
-$resultCreator = $con->query($sqlCreator);
-$rowC = mysqli_fetch_array($resultCreator);
+$sqlCreator = "SELECT name, email FROM user WHERE id=?";
+$resultCreator = $con->prepare($sqlCreator);
+$resultCreator->bind_param('i', $productCreatorID);
+$resultCreator->execute();
+$resultCreator = $resultCreator->get_result();
+$rowC = $resultCreator->fetch_assoc();
 
 $productCreatorName = $rowC['name'];
 
 //DB calls for purchased Product
-$sqlPurchase = "SELECT COUNT(productID) AS count FROM purchasedBy WHERE productID = '$productID'";
-$resultPurchase = $con->query($sqlPurchase);
-$rowPur = mysqli_fetch_array($resultPurchase);
+$sqlPurchase = "SELECT COUNT(productID) AS count FROM purchasedBy WHERE productID =?";
+$resultPurchase = $con->prepare($sqlPurchase);
+$resultPurchase->bind_param('i', $productID);
+$resultPurchase->execute();
+$resultPurchase = $resultPurchase->get_result();
+$rowPur = $resultPurchase->fetch_assoc();
 
 $productPurchasedCount = $rowPur['count'];
 console_log($productPurchasedCount);
@@ -69,11 +78,14 @@ if(isset($_SESSION['loginsession'])){
 }
 
 //get Name of logged in user
-$sqlLoggedIn = "SELECT name FROM user WHERE id = '$loggedInUserID'";
-$resultLoggedIn = $con->query($sqlLoggedIn);
-$rowLI = mysqli_fetch_array($resultLoggedIn);
+$sqlLoggedIn = "SELECT name FROM user WHERE id =?";
+$resultLoggedIn = $con->prepare($sqlLoggedIn);
+$resultLoggedIn->bind_param('i', $loggedInUserID);
+$resultLoggedIn->execute();
+$resultLoggedIn = $resultLoggedIn->get_result();
+$rowLI = $resultLoggedIn->fetch_assoc();
 
-$loggedInUserName = $rowLI['name'];
+$loggedInUserName = $rowLI["name"];
 
 //LOGOUT BUTTON -> only for testing purposes TODO delete this here
 if (isset($_POST['logout'])) {
@@ -94,9 +106,12 @@ if (isset($_POST['buyProduct'])) {
     console_log($date);
 
     if($isLoggedIn){
-        $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`) VALUES ('$productID', '$loggedInUserID', '$date')";
-        $result = $con->query($sqlBuyProduct);
-        if(!$result) {
+        $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`) VALUES (?,?,?)";
+        $result = $con->prepare($sqlBuyProduct);
+        $result->bind_param('iis', $productID, $loggedInUserID, $date);
+        $result->execute();
+
+        if($result->affected_rows != 1) {
             ?>
             <script>
                 window.alert("Purchase Failed");
@@ -117,8 +132,11 @@ if (isset($_POST['buyProduct'])) {
 
 
 //get ALL REVIEWS for ProductID
-$sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = '$productID' ORDER BY replyOfReviewID DESC, id ";
-$resultReview = $con->query($sqlReview);
+$sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = ? ORDER BY replyOfReviewID DESC, id ";
+$resultReview = $con->prepare($sqlReview);
+$resultReview->bind_param('i', $productID);
+$resultReview->execute();
+$resultReview = $resultReview->get_result();
 $nrReviews = $resultReview->num_rows;
 
 console_log('result NR: ' . $nrReviews); //TODO delete when done
@@ -134,8 +152,11 @@ if($nrReviews > 0){
     $ids = array_column($reviews, 'userID');
     $reviewerIds = implode(',', $ids);
 
-    $reviewUsers = "SELECT name, id FROM user where id in ($reviewerIds)";
-    $resultAllUserNames = $con->query($reviewUsers);
+    $reviewUsers = "SELECT name, id FROM user where id in (?)";
+    $resultAllUserNames = $con->prepare($reviewUsers);
+    $resultAllUserNames->bind_param('i', $reviewerIds);
+    $resultAllUserNames->execute();
+    $resultAllUserNames = $resultAllUserNames->get_result();
 
     $allUserIds = [];
     $allUserNames = [];
@@ -177,8 +198,10 @@ if(isset($_POST['writeReview'])){
     $text = input($_POST['reviewText']);
     $replyOfReviewID = input($_POST['currentReviewID']);
 
-    $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES ('$productID', '$loggedInUserID', '$text', '$replyOfReviewID')";
-    $result = $con->query($sqlWriteReview);
+    $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES (?,?,?,?)";
+    $result = $con->prepare($sqlWriteReview);
+    $result->bind_param('iisi', $productID, $loggedInUserID, $text, $replyOfReviewID);
+    $result->execute();
 
     header("Refresh:0");
 }
@@ -271,7 +294,7 @@ $con->close();
             $rowRR = NULL;
 
             if($nrReviews != 0){
-                $rowRR = mysqli_fetch_array($resultReview);
+                $rowRR = $resultReview->fetch_assoc();
                 $currentBulkID = $rowRR['replyOfReviewID'];
             }
 
