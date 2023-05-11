@@ -85,6 +85,17 @@ Found vulnerabilities due to the three input fields to add a product :
     <script>alert("I am an attacker")</script>
     ```
 
+# Secure Version Description
+
+## SQL Sanitation
+
+For the SQL Sanitation agains SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard 
+``` mysqli::query()  ```method. Prepared Statement are useful agains this type of attack because the parameters of the query are sent
+to the server after the query itself. The security is even more stronger by the use of input validation, which is done in the XSS
+Sanitation part. 
+
+## XSS Sanitation
+
 # Notes
 
 - In order to perform multiple queries in one statement, PHP requires to use the function :

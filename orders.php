@@ -11,9 +11,15 @@
 
     $vendorId = $_GET['vendorId'];
 
-    //is the user is a buyer, it should not be able to see its orders, since it has none
+    //if the user is a buyer, it should not be able to see its orders, since it has none
     if ($user['isVendor']==0) {
         header('location: landingPage.php');
+    }
+
+    //a user (vendor) can only see its own orders
+    if ($userid != $vendorId)
+    {
+        header("location: orders.php?vendorId=" . $userid);
     }
 
     //this query shows all the orders that the sellers received from buyers
