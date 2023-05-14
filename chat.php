@@ -84,15 +84,21 @@ if(isset($_GET['id'])){
 
     //if button is clicked
     if(isset($_POST['sendmsg'])){
-        $message = input($_POST['msgtext']);
-        $date = date('Y-m-d H:i:s');
 
-        //prepared query: insert a text message
-        $result = $con->prepare("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES (?,?,?,?)");
-        $result->bind_param('sssi', $message, $date, $chatwithuserid, $userid);
-        $result->execute();
-    
-        header("Refresh:0");
+        $token = input($_POST['token']);
+
+        if (verifyToken($token)) {
+            $message = input($_POST['msgtext']);
+            $date = date('Y-m-d H:i:s');
+
+            //prepared query: insert a text message
+            $result = $con->prepare("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES (?,?,?,?)");
+            $result->bind_param('sssi', $message, $date, $chatwithuserid, $userid);
+            $result->execute();
+
+            header("Refresh:0");
+        }
+
     }
 }
 
@@ -143,6 +149,7 @@ if(isset($_GET['id'])){
 
                 ?>
                 <form  action="" method="post" style=" display: flex;">
+                    <input type="hidden" name="token" value="<?=$_SESSION["token"]?>">
                     <input style="width: 100%" type="text" name="msgtext">
                     <input type="submit" value="send" class="button" name="sendmsg">
                 </form>

@@ -87,47 +87,44 @@ $rowLI = $resultLoggedIn->fetch_assoc();
 
 $loggedInUserName = $rowLI["name"];
 
-//LOGOUT BUTTON -> only for testing purposes TODO delete this here
-if (isset($_POST['logout'])) {
-    session_destroy();
-    $isLoggedIn = false;
-    header('location: login.php');
-}
-
-//BACK BUTTON
-if(isset($_POST['back'])){
-    header('location: landingpage.php');
-}
-
 
 //BUY PRODUCT BUTTON
 if (isset($_POST['buyProduct'])) {
-    $date = date('Y-m-d H:i:s');
-    console_log($date);
 
-    if($isLoggedIn){
-        $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`) VALUES (?,?,?)";
-        $result = $con->prepare($sqlBuyProduct);
-        $result->bind_param('iis', $productID, $loggedInUserID, $date);
-        $result->execute();
+    $token = input($_POST['token']);
 
-        if($result->affected_rows != 1) {
-            ?>
-            <script>
-                window.alert("Purchase Failed");
-            </script>
-            <?php
+    if (verifyToken($token)) {
+        $date = date('Y-m-d H:i:s');
+        console_log($date);
+
+        if($isLoggedIn){
+            $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`) VALUES (?,?,?)";
+            $result = $con->prepare($sqlBuyProduct);
+            $result->bind_param('iis', $productID, $loggedInUserID, $date);
+            $result->execute();
+
+            if($result->affected_rows != 1) {
+                ?>
+                <script>
+                    window.alert("Purchase Failed");
+                </script>
+                <?php
+            }
+            else {
+                ?>
+                <script>
+                    window.alert("Product bought successfully");
+                </script>
+                <?php
+            }
         }
-        else {
-            ?>
-            <script>
-                window.alert("Product bought successfully");
-            </script>
-            <?php
-        }
+        console_log('bought product');
+        header("Refresh:0");
     }
-    console_log('bought product');
-    header("Refresh:0");
+    else {
+        exit('invalid token');
+    }
+
 }
 
 
@@ -199,21 +196,27 @@ if($nrReviews > 0){
 
 //write Review
 if(isset($_POST['writeReview'])){
-    $text = input($_POST['reviewText']);
-    $replyOfReviewID = input($_POST['currentReviewID']);
 
-    $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES (?,?,?,?)";
-    $result = $con->prepare($sqlWriteReview);
-    $result->bind_param('iisi', $productID, $loggedInUserID, $text, $replyOfReviewID);
-    $result->execute();
+    $token = input($_POST['token']);
 
-    header("Refresh:0");
+    if (verifyToken($token)) {
+        $text = input($_POST['reviewText']);
+        $replyOfReviewID = input($_POST['currentReviewID']);
+
+        $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES (?,?,?,?)";
+        $result = $con->prepare($sqlWriteReview);
+        $result->bind_param('iisi', $productID, $loggedInUserID, $text, $replyOfReviewID);
+        $result->execute();
+
+        header("Refresh:0");
+    }
 }
 
 
 // submit review FUNCTION
 function inputFunction($currentReviewID, $buttonName, $placeholder){
     echo "<form action=\"\" method=\"post\" style=\"text-indent:30px;\">";
+        echo "<input type='hidden' name='token' value='{$_SESSION['token']}'/>";
         echo "<input type='hidden' name='currentReviewID' value='$currentReviewID'/>";
         echo "<input required type=\"text\" name=\"reviewText\" placeholder=\"$placeholder\"  class=\"input-review\">";
         echo "<input type=\"submit\" name=\"writeReview\" value=\"$buttonName\"  class=\"button\">";
@@ -278,6 +281,7 @@ $con->close();
 
                     <?php if(!$isProductOwner && $isLoggedIn){ ?>
                         <form action="" method="post">
+                            <input type="hidden" name="token" value="<?=$_SESSION["token"]?>">
                             <input type="submit" name="buyProduct" value="BUY PRODUCT" class="button">
                         </form>
                     <?php } ?>

@@ -13,12 +13,12 @@
     $lowerStringInserted = "";
 
     //function for the search button
-    if (isset($_POST['search'])) {
+    if (isset($_POST['search'])) {          //TODO does it need CSRF prevention?
         $lowerStringInserted = $_POST['toSearch'];
     }
 
     //function for the reset button
-    if (isset($_POST['resetSearch'])) {
+    if (isset($_POST['resetSearch'])) {     //TODO does it need CSRF prevention?
         $lowerStringInserted = "";
     }
 
@@ -54,7 +54,7 @@
             <!-- SEARCH BAR -->
             <div>
                 <form method="post">
-                    <input  type="text" name="toSearch" placeholder="Search..">
+                    <input type="text" name="toSearch" placeholder="Search..">
                     <input class="button" type="submit" name="search" value="Search" />
                     <input class="button" type="submit" name="resetSearch" value="Reset" />
                 </form>

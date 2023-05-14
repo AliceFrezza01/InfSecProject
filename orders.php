@@ -8,6 +8,7 @@
 
     global $con;
     global $user;
+    global $userid;
 
     $vendorId = $_GET['vendorId'];
 

@@ -47,6 +47,17 @@ if(isset($_POST['register'])){
         } else {
             $createduserid = mysqli_insert_id($con);
             $_SESSION['loginsession'] = $createduserid;
+
+            // GENERATE RANDOM CSRF TOKEN + SET TIMEOUT FOR TOKEN
+            try {
+                $_SESSION["token"] = bin2hex(random_bytes(32));
+                $_SESSION["token-expiry"] = time() + 3600;  //after 1h
+                console_log('token generated');
+            } catch (Exception $e) {
+                console_log('token not generated');
+                echo "token not generated";
+            }
+
             header('location: landingpage.php');
         }
 

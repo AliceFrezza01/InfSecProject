@@ -13,11 +13,21 @@ if(isset($_SESSION['loginsession'])){
 //if button is clicked
 if(isset($_POST['login'])){
 
+    // GENERATE RANDOM CSRF TOKEN + SET TIMEOUT FOR TOKEN
+    try {
+        $_SESSION["token"] = bin2hex(random_bytes(32));
+        $_SESSION["token-expiry"] = time() + 3600;  //after 1h
+        console_log('token generated');
+    } catch (Exception $e) {
+        console_log('token not generated');
+        echo "token not generated";
+    }
+
     $username = input($_POST['user']);
     $password = input($_POST['password']);
 
-    //check if login is correct
 
+    //check if login is correct
     $search_user = $con->prepare("SELECT * FROM user WHERE email = ?");
     $search_user->bind_param('s',$username);
     $search_user->execute();
