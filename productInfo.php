@@ -150,13 +150,17 @@ if($nrReviews > 0){
     }
 
     $ids = array_column($reviews, 'userID');
-    $reviewerIds = implode(',', $ids);
+    $reviewerIds = implode(',', array_fill(0, count($ids), '?'));
 
-    $reviewUsers = "SELECT name, id FROM user where id in (?)";
-    $resultAllUserNames = $con->prepare($reviewUsers);
-    $resultAllUserNames->bind_param('i', $reviewerIds);
-    $resultAllUserNames->execute();
-    $resultAllUserNames = $resultAllUserNames->get_result();
+    $reviewUsers = "SELECT name, id FROM user WHERE id IN ($reviewerIds)";
+    $stmt = $con->prepare($reviewUsers);
+
+    // bind the parameters
+    $types = str_repeat('i', count($ids)); // 'i' represents an integer type
+    $stmt->bind_param($types, ...$ids); // use the splat operator to unpack the array of IDs
+    $stmt->execute();
+    $resultAllUserNames = $stmt->get_result();
+
 
     $allUserIds = [];
     $allUserNames = [];
