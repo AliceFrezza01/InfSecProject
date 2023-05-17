@@ -4,6 +4,7 @@ session_start();
 <?php
     include ('connect.php');
     include ('authentificationUser.php');
+    include ('xssSanitation.php');
 
     global $con;
     global $user;
@@ -23,16 +24,21 @@ session_start();
             $price = $_POST['priceproduct'];
             $link = $_POST['linkproduct'];
 
-            //this query adds the new product, with its info
-            $insertion_query = $con->prepare("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES (?,?,?,?)");
-            $insertion_query->bind_param('sdsi', $name, $price, $link, $userid);
-            $insertion_query->execute();
-
-            if ($insertion_query->affected_rows != 1) {
+            if ($name!="" && $price!="" && $link!="") {
                 echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
             } else {
-                echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
+                //this query adds the new product, with its info
+                $insertion_query = $con->prepare("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES (?,?,?,?)");
+                $insertion_query->bind_param('sdsi', $name, $price, $link, $userid);
+                $insertion_query->execute();
+
+                if ($insertion_query->affected_rows != 1) {
+                    echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
+                } else {
+                    echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
+                }
             }
+        
         }
 
     }

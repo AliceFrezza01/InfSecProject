@@ -147,6 +147,14 @@ Sanitation part.
 
 ## XSS Sanitation
 
+- filter input array for getting the values from the text fields
+    - trim
+- htmlspecial chars for outputting the values before echo
+    - 
+L'attacco non funziona anche per: mostra tests da 
+https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting 
+https://www.w3docs.com/snippets/php/how-can-i-sanitize-user-input-with-php.html 
+
 # Notes
 
 - In order to perform multiple queries in one statement, PHP requires to use the function :

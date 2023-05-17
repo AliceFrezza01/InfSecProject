@@ -15,8 +15,7 @@
 
     //function for the search button
     if (isset($_POST['search'])) {          //TODO does it need CSRF prevention?
-        $lowerStringInserted = sanitation($_POST['toSearch'], 50, "string");
-        echo $lowerStringInserted;
+        $lowerStringInserted = sanitation($_POST['toSearch'], "string");
     }
 
     //function for the reset button
@@ -63,7 +62,7 @@
             </div>
             <?php
             if ($lowerStringInserted!="")
-                echo "<p>You searched " . $lowerStringInserted . "</p>";
+                echo "<p>You searched <b>" . $lowerStringInserted . "</b></p>";
             ?>
             </div>
         </div>
