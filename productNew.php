@@ -20,12 +20,12 @@ session_start();
         $token = input($_POST['token']);
 
         if (verifyToken($token)) {
-            $name = $_POST['nameproduct'];
-            $price = $_POST['priceproduct'];
-            $link = $_POST['linkproduct'];
+            $name = sanitation($_POST['nameproduct'], "string");
+            $price = sanitation($_POST['priceproduct'], "number_float");
+            $link = sanitation($_POST['linkproduct'], "url");
 
-            if ($name!="" && $price!="" && $link!="") {
-                echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
+            if ($name=="" || $price=="" || $link=="") {
+                echo "<script type='text/javascript'>alert('The product could not be inserted. Check the datatype or that you inserted all the values.');</script>";
             } else {
                 //this query adds the new product, with its info
                 $insertion_query = $con->prepare("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES (?,?,?,?)");
