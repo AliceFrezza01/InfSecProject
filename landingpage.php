@@ -5,6 +5,7 @@
 
     include ('connect.php');
     include ('authentificationUser.php');
+    include ('xssSanitation.php');
 
     global $con;
     global $user;
@@ -14,7 +15,8 @@
 
     //function for the search button
     if (isset($_POST['search'])) {          //TODO does it need CSRF prevention?
-        $lowerStringInserted = $_POST['toSearch'];
+        $lowerStringInserted = sanitation($_POST['toSearch'], 50, "string");
+        echo $lowerStringInserted;
     }
 
     //function for the reset button
@@ -59,7 +61,10 @@
                     <input class="button" type="submit" name="resetSearch" value="Reset" />
                 </form>
             </div>
-
+            <?php
+            if ($lowerStringInserted!="")
+                echo "<p>You searched " . $lowerStringInserted . "</p>";
+            ?>
             </div>
         </div>
         <!-- PRODUCT MENU -->
