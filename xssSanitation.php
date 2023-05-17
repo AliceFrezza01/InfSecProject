@@ -1,12 +1,15 @@
 <?php
 
-function sanitation($text, $dataType) {
+function sanitation($text, $dataType, $quoteStrict) {
 
     $text = trim($text);
 
     $text = strip_tags($text);
 
-    $text = htmlspecialchars($text, ENT_QUOTES, "UTF-8");
+    if ($quoteStrict)
+        $text = htmlspecialchars($text, ENT_QUOTES, "UTF-8");
+    else 
+        $text = htmlspecialchars($text, ENT_NOQUOTES, "UTF-8");
 
     if ($dataType=="email") {
         $validate = filter_var($text, FILTER_VALIDATE_EMAIL);

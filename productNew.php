@@ -20,9 +20,9 @@ session_start();
         $token = input($_POST['token']);
 
         if (verifyToken($token)) {
-            $name = sanitation($_POST['nameproduct'], "string");
-            $price = sanitation($_POST['priceproduct'], "number_float");
-            $link = sanitation($_POST['linkproduct'], "url");
+            $name = sanitation($_POST['nameproduct'], "string", true);
+            $price = sanitation($_POST['priceproduct'], "number_float",true);
+            $link = sanitation($_POST['linkproduct'], "url", true);
 
             if ($name=="" || $price=="" || $link=="") {
                 echo "<script type='text/javascript'>alert('The product could not be inserted. Check the datatype or that you inserted all the values.');</script>";

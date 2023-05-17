@@ -5,6 +5,7 @@ session_start();
 
 include ('connect.php');
 include ('authentificationUser.php');
+include ('xssSanitation.php');
 
 global $con;
 global $user;
@@ -88,7 +89,7 @@ if(isset($_GET['id'])){
         $token = input($_POST['token']);
 
         if (verifyToken($token)) {
-            $message = input($_POST['msgtext']);
+            $message = input(sanitation($_POST['msgtext'], "string", false));
             $date = date('Y-m-d H:i:s');
 
             //prepared query: insert a text message
