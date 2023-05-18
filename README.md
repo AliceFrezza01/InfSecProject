@@ -92,9 +92,9 @@ XSS attacks can be found in multiple pages. Some examples are:
     ```
     by inserting this string in the field.
 
-- The same attack can be used also in the productNew.php page, in each of the three fields.ù
+- The same attack can be used also in the productNew.php page, in each of the three fields.
 - Similar situation is when a user registers itself with a malicous username or email address. This is 
-  malicious due to the fact that this data can be seen by other users in multiple parts of the website,
+  dangerous due to the fact that this data can be seen by other users in multiple parts of the website,
   making thefore possible the attack. 
 
 ### Notes
