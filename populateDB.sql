@@ -1,6 +1,8 @@
 TRUNCATE TABLE user;
 TRUNCATE TABLE product;
 TRUNCATE TABLE purchasedby;
+TRUNCATE TABLE review;
+TRUNCATE TABLE chatmessage;
 
 -- Buyers
 INSERT INTO user(email, password, salt, name, isVendor)
