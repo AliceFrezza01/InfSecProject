@@ -18,8 +18,7 @@
     }
 
     //a user (vendor) can only see its own orders
-    if ($userid != $vendorId)
-    {
+    if ($userid != $vendorId) {
         header("location: orders.php?vendorId=" . $userid);
     }
 

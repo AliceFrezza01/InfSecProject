@@ -101,8 +101,6 @@ body{
     justify-content: center;
 }
 
-
-
 .display-flex{
     display: flex;
     flex-direction: row;
@@ -178,8 +176,6 @@ div input {
 .link_products {
     text-decoration: none;
 }
-
-
 
  /* Css for order page */
 .orderTable {

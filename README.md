@@ -97,7 +97,7 @@ Found vulnerabilities due to input fields:
 Found vulnerabilities due to input fields:
 - SQL Injections in the chatmessage input field
 - XSS stored
-  For example add a script into the chat field, so if the person who the chatmessage was sendet opens the chat, this script will be executed
+  For example add a script into the chat field, so if the person who the chatmessage was sent opens the chat, this script will be executed
    ``` js 
     <script>alert("I am an attacker")</script>
     ```
@@ -138,26 +138,16 @@ Found vulnerabilities due to the three input fields to add a product :
 
 # Secure Version Description
 
-## SQL Sanitation
+## **SQL Sanitation**
 
 For the SQL Sanitation agains SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard 
 ``` mysqli::query()  ```method. Prepared Statement are useful agains this type of attack because the parameters of the query are sent
 to the server after the query itself. The security is even more stronger by the use of input validation, which is done in the XSS
 Sanitation part. 
 
-## XSS Sanitation
+### Notes
 
-- filter input array for getting the values from the text fields
-    - trim
-- htmlspecial chars for outputting the values before echo
-    - 
-L'attacco non funziona anche per: mostra tests da 
-https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting 
-https://www.w3docs.com/snippets/php/how-can-i-sanitize-user-input-with-php.html 
-
-# Notes
-
-- In order to perform multiple queries in one statement, PHP requires to use the function :
+In order to perform multiple queries in one statement, PHP requires to use the function :
     ``` php
     public mysqli::multi_query(string $query): bool
     ```
@@ -167,3 +157,17 @@ https://www.w3docs.com/snippets/php/how-can-i-sanitize-user-input-with-php.html
     ```
     Therefore we don't need to worry about sql injection attacks which are based on executing multiple queries at the same time. 
     However the developer should be careful about the possibility of attacks based on JOIN. 
+
+## **XSS Sanitation**
+
+In order to protect the website from XSS attacks, both reflected and stored, I implemented the following safety measures: 
+- filtering the input values received from $GET and $POST fields;
+- escaping special characters of the output string before outputting it.
+
+Most of the attacks were already 
+
+L'attacco non funziona anche per: mostra tests da 
+https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting 
+https://www.w3docs.com/snippets/php/how-can-i-sanitize-user-input-with-php.html 
+
+xss era già molto protetto da prepared queries

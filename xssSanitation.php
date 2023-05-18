@@ -1,7 +1,7 @@
 <?php
 
 function sanitation($text, $dataType, $quoteStrict) {
-
+/*
     $text = trim($text);
 
     $text = strip_tags($text);
@@ -27,7 +27,9 @@ function sanitation($text, $dataType, $quoteStrict) {
         return $text;
     } else {
         return "";
-    }
+    } */
+
+    return $text;
 }
 
 ?>

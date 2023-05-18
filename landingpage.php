@@ -85,7 +85,6 @@
                                         echo "<br/><img alt='\"Product\"' src='" . $row['imgLink'] . "' height=\"100\" />";
                                     echo "</div>";
                                 echo "</a></div>";
-
                             }
                         }
                     echo "</div>";
