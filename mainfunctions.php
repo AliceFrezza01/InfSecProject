@@ -7,7 +7,7 @@ function console_log($output, $with_script_tags = true){
 
 #Input Function
 function input($data) {
-    $data = trim($data); $data = stripslashes($data); $data = htmlspecialchars($data); return $data;
+    return $data;
 }
 
 ?>
