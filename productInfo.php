@@ -24,7 +24,7 @@ $nrAllProducts = $rowAP['count'];
 $productID = $_GET['productId'];
 
 //if invalid ProductID -> LANDINGPAGE
-if($productID == NULL || $nrAllProducts < $productID) {
+if(is_int($productID) && $productID != NULL && $nrAllProducts <= $productID) {
     header('location: landingpage.php');
 }
 
