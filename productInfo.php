@@ -8,6 +8,8 @@ ini_set( 'display_errors', true );
 //imports
 include 'connect.php';
 include ('authentificationUser.php');
+include ('xssSanitation.php');
+
 global $con;
 global $user;
 
@@ -18,15 +20,13 @@ $rowAP = mysqli_fetch_array($resultAllProducts);
 
 $nrAllProducts = $rowAP['count'];
 
-
 //get productID from Landing Page
 $productID = $_GET['productId'];
 
 //if invalid ProductID -> LANDINGPAGE
-if($productID == NULL || $nrAllProducts < $productID) {
+if(is_int($productID) && $productID != NULL && $nrAllProducts <= $productID) {
     header('location: landingpage.php');
 }
-
 
 //DB Calls for Product
 $sqlProduct = "SELECT name, price, imgLink, creatorUserID FROM product WHERE id =?";
@@ -200,7 +200,7 @@ if(isset($_POST['writeReview'])){
     $token = input($_POST['token']);
 
     if (verifyToken($token)) {
-        $text = input($_POST['reviewText']);
+        $text = input(sanitation($_POST['reviewText'], "string", false));
         $replyOfReviewID = input($_POST['currentReviewID']);
 
         $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES (?,?,?,?)";

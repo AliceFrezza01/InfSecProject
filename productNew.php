@@ -4,6 +4,7 @@ session_start();
 <?php
     include ('connect.php');
     include ('authentificationUser.php');
+    include ('xssSanitation.php');
 
     global $con;
     global $user;
@@ -19,20 +20,25 @@ session_start();
         $token = input($_POST['token']);
 
         if (verifyToken($token)) {
-            $name = $_POST['nameproduct'];
-            $price = $_POST['priceproduct'];
-            $link = $_POST['linkproduct'];
+            $name = sanitation($_POST['nameproduct'], "string", true);
+            $price = sanitation($_POST['priceproduct'], "number_float",true);
+            $link = sanitation($_POST['linkproduct'], "url", true);
 
-            //this query adds the new product, with its info
-            $insertion_query = $con->prepare("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES (?,?,?,?)");
-            $insertion_query->bind_param('sdsi', $name, $price, $link, $userid);
-            $insertion_query->execute();
-
-            if ($insertion_query->affected_rows != 1) {
-                echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
+            if ($name=="" || $price=="" || $link=="") {
+                echo "<script type='text/javascript'>alert('The product could not be inserted. Check the datatype or that you inserted all the values.');</script>";
             } else {
-                echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
+                //this query adds the new product, with its info
+                $insertion_query = $con->prepare("INSERT INTO product(`name`, `price`, `imgLink`, `creatorUserID`) VALUES (?,?,?,?)");
+                $insertion_query->bind_param('sdsi', $name, $price, $link, $userid);
+                $insertion_query->execute();
+
+                if ($insertion_query->affected_rows != 1) {
+                    echo "<script type='text/javascript'>alert('The product could not be inserted.');</script>";
+                } else {
+                    echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
+                }
             }
+        
         }
 
     }

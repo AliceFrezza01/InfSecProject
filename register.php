@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-include 'connect.php';
+include ('connect.php');
+include ('xssSanitation.php');
 
 global $con;
 
@@ -14,10 +15,14 @@ if(isset($_SESSION['loginsession'])){
 if(isset($_POST['register'])){
 
     $usertype = input($_POST['usertype']);
-    $name = input($_POST['name']);
-    $username = input($_POST['user']);
+    $name = input(sanitation($_POST['name'], "string", false)); //username
+    $username = input(sanitation($_POST['user'], "email", true)); //email
     $password = input($_POST['password']);
 
+    if ($name=="" || $username=="" || $password=="") {
+        echo "<script type='text/javascript'>alert('The account is not created, due to the credentials. Check the types and that the values are not empty. Then retry.');</script>";
+    } else {
+    
     //check if user already exists
     $search_result = $con->prepare("SELECT * FROM user WHERE email=?");
     $search_result->bind_param('s', $username);
@@ -26,41 +31,42 @@ if(isset($_POST['register'])){
 
     if($result->num_rows == 1){
         echo('<p style="color:red">User with this email already exists</p>');
-    }else{
-        //create new user
-        if($usertype == 'vendor'){
-            $isVendor = 1;
-        }else{
-            $isVendor = 0;
-        }
-        $salt = lcg_value();
-        $salt = intval($salt*10000);
-        $concat = $password . $salt;
-        $password = hash('sha384', $concat);
+    }else {
+            //create new user
+            if($usertype == 'vendor'){
+                $isVendor = 1;
+            }else{
+                $isVendor = 0;
+            }
+            $salt = lcg_value();
+            $salt = intval($salt*10000);
+            $concat = $password . $salt;
+            $password = hash('sha384', $concat);
 
-        $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES (?,?,?,?,?)");
-        $insertion_query->bind_param('sssii', $name, $user, $password, $isVendor, $salt);
-        $insertion_query->execute();
+            $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES (?,?,?,?,?)");
+            $insertion_query->bind_param('sssii', $name, $username, $password, $isVendor, $salt);
+            $insertion_query->execute();
 
-        if ($insertion_query->affected_rows != 1) {
-            echo('<p style="color:red">Error creating user</p>');
-        } else {
-            $createduserid = mysqli_insert_id($con);
-            $_SESSION['loginsession'] = $createduserid;
+            if ($insertion_query->affected_rows != 1) {
+                echo('<p style="color:red">Error creating user</p>');
+            } else {
+                $createduserid = mysqli_insert_id($con);
+                $_SESSION['loginsession'] = $createduserid;
 
-            // GENERATE RANDOM CSRF TOKEN + SET TIMEOUT FOR TOKEN
-            try {
-                $_SESSION["token"] = bin2hex(random_bytes(32));
-                $_SESSION["token-expiry"] = time() + 3600;  //after 1h
-                console_log('token generated');
-            } catch (Exception $e) {
-                console_log('token not generated');
-                echo "token not generated";
+                // GENERATE RANDOM CSRF TOKEN + SET TIMEOUT FOR TOKEN
+                try {
+                    $_SESSION["token"] = bin2hex(random_bytes(32));
+                    $_SESSION["token-expiry"] = time() + 3600;  //after 1h
+                    console_log('token generated');
+                } catch (Exception $e) {
+                    console_log('token not generated');
+                    echo "token not generated";
+                }
+
+                header('location: landingpage.php');
             }
 
-            header('location: landingpage.php');
         }
-
     }
 }
 

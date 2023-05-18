@@ -50,9 +50,65 @@ Browser Refresh -> CMD/CTRL + SHIFT + R
 
 # Insecure Version Description
 
-## SQL Injection
-## XSS Reflection
-## XSS Storing
+## **SQL Injection**
+
+SQL attacks can be found in multiple pages. Some examples are:
+
+- Login and Register Page.<br>
+   Inserting in the username field the following query allows an attacker
+   to login with a certain account and without knowing the password.
+    ```
+    carlo@gmail.com'#
+    ```
+
+- Landing Page.<br>
+    Inserting in the search field the following query allows an attacker 
+    to not apply the filter for the world written, but to show all the products. 
+    It would not be too dangerous anyway.
+    ```
+    abcdefg%' OR 1=1 -- 
+    ```
+
+- Order Page. <br>
+    These two SQL attacks are possible in the order page. 
+    - not dangeours.
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20--
+        -- This url does not order the orders
+        ```
+    - dangerous.
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20OR%201=1%20--
+        -- This url allows to see all the orders done by everyone
+        ```
+
+## **XSS Attacks**
+
+XSS attacks can be found in multiple pages. Some examples are:
+
+- In the Chat and ProductInfo page it is possible to perform XSS Stored attack like:
+    ``` js 
+    <script>alert("I am an attacker")</script>
+    ```
+    by inserting this string in the field.
+
+- The same attack can be used also in the productNew.php page, in each of the three fields.ù
+- Similar situation is when a user registers itself with a malicous username or email address. This is 
+  malicious due to the fact that this data can be seen by other users in multiple parts of the website,
+  making thefore possible the attack. 
+
+### Notes
+
+All the pages that receive values from the field using GET are protected, making sure that the value inserted is
+what it should be. In the orders.php page, for example, the id of the vendor is sent though get from the landing page. 
+But in the orders.php page, there is a check ensuring that the number passed corresponds to the id of the vendor: 
+    ``` php
+    if ($user['isVendor']==0) {
+        header('location: landingPage.php');
+    }
+    ``` 
+
+
 ## XSRF/CSRF
 ## Intercepting Chat Messages
 ## Password Attacks (Burp Intruder)
@@ -97,7 +153,7 @@ Found vulnerabilities due to input fields:
 Found vulnerabilities due to input fields:
 - SQL Injections in the chatmessage input field
 - XSS stored
-  For example add a script into the chat field, so if the person who the chatmessage was sendet opens the chat, this script will be executed
+  For example add a script into the chat field, so if the person who the chatmessage was sent opens the chat, this script will be executed
    ``` js 
     <script>alert("I am an attacker")</script>
     ```
@@ -136,20 +192,26 @@ Found vulnerabilities due to the three input fields to add a product :
     <script>alert("I am an attacker")</script>
     ```
 
+## Other vulnerabilities
+
+- In the orders.php page there is no check ensuring that a user sees only its orders
+    ``` sql 
+    http://localhost/InfSecProject/orders.php?vendorId=...
+    -- One could insert any value as vendorId
+    ```
+
 # Secure Version Description
 
-## SQL Sanitation
+## **SQL Sanitation**
 
 For the SQL Sanitation agains SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard 
 ``` mysqli::query()  ```method. Prepared Statement are useful agains this type of attack because the parameters of the query are sent
 to the server after the query itself. The security is even more stronger by the use of input validation, which is done in the XSS
 Sanitation part. 
 
-## XSS Sanitation
+### Notes
 
-# Notes
-
-- In order to perform multiple queries in one statement, PHP requires to use the function :
+In order to perform multiple queries in one statement, PHP requires to use the function :
     ``` php
     public mysqli::multi_query(string $query): bool
     ```
@@ -159,3 +221,26 @@ Sanitation part.
     ```
     Therefore we don't need to worry about sql injection attacks which are based on executing multiple queries at the same time. 
     However the developer should be careful about the possibility of attacks based on JOIN. 
+
+## **XSS Sanitation**
+
+In order to protect the website from XSS attacks, both reflected and stored, I implemented the following safety measures: 
+- filtering the input values received from $GET and $POST fields. For this I used the following php functions:
+    - ```trim()```
+    - ```strip_tags()```
+    - ```filter_var()```
+- escaping special characters of the output string before outputting it. This has been done using ```htmlspecialchars()```.
+
+### Tests
+
+The website has been tested against most of the possible XSS attacks. Examples are:
+- ```"><script >alert(document.cookie)</script >```
+- ```"%3cscript%3ealert(document.cookie)%3c/script%3e```
+- ```<scr<script>ipt>alert(document.cookie)</script>```
+
+Reference: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting  
+
+### xssSanification.php file
+
+xssSanification implements a function called ```sanitation``` which takes in input three variables: ``` $text, $dataType, $quoteStrict ```. According to the data type of the variable inserted and whether we are encoding the quotes strictly, 
+it will return as output the safe version of the previous data. More documentation of the function can be found on the file itself.
