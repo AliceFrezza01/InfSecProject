@@ -53,14 +53,14 @@
                     <th scope="col" class="orderTable">#</th>
                     <th scope="col" class="orderTable">Product Name</th>
                     <th scope="col" class="orderTable">Price</th>
-                    <th scope="col" class="orderTable">Date of Purchacee</th>
+                    <th scope="col" class="orderTable">Date of Purchase</th>
                     <th scope="col" class="orderTable">Email of Buyer</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                  if ($nr_results==0)
-                    echo "<h3>Noone has purchased your items yet. Come back later.</h3>";
+                    echo "<h3>No one has purchased your items yet. Come back later.</h3>";
                  else {
                     echo "<h3 class=\"orderTable\">List of your orders:</h3>";
                     for ($x = 0; $x < $nr_results; $x++) 
@@ -68,19 +68,44 @@
                         $row = $result->fetch_assoc();
    
                        //this query retrieves the email address of the buyer starting from its ID
-                       $nameBuyer = $con->prepare("SELECT email FROM user WHERE id =?");
+                       $nameBuyer = $con->prepare("SELECT email, publicKey FROM user WHERE id =?");
                        $nameBuyer->bind_param('i', $row['userID']);
                        $nameBuyer->execute();
                        $nameBuyer = $nameBuyer->get_result();
                        $rowNameBuyer = $nameBuyer->fetch_assoc();
 
-                       //contect of the table: name, price, buyerdate and email of the buyer
+
+
+                       //DSA
+                        $verifiedPurchase = "";
+                        $signatureMessage = "rightful purchase";    //don't change -> is linked to signature
+
+                        $decodeSignature = base64_decode($row['signature']);
+
+
+                        if ($decodeSignature == null){          // TODO delete, as it should not be necessary if every purchase has a signature
+                            $verifiedPurchase = "no signature given";
+                        }
+                        else {
+                            $verification = openssl_verify($signatureMessage, $decodeSignature, $rowNameBuyer['publicKey'], "sha256WithRSAEncryption");
+                            if ($verification == 1){
+                                $verifiedPurchase = "valid digital Signature";
+                            }
+                            else {
+                                $verifiedPurchase = "tampered signature";
+                            }
+                        }
+
+
+
+                       //content of the table: name, price, buyerDate and email of the buyer
                        echo "<tr>";
                            echo "<th scope=\"row\">" . ($x + 1) . "</th>";
                            echo "<td class=\"orderTable\">" . $row['name'] . "</td>";
                            echo "<td class=\"orderTable\">" . $row['price'] . "</td>";
                            echo "<td class=\"orderTable\">" . $row['buyDate'] . "</td>";
                            echo "<td class=\"orderTable\">" . $rowNameBuyer['email'] . "</td>";
+                           echo "<td class=\"orderTable\">" . $verifiedPurchase . "</td>";          //TODO does not need to be shown like this -> only for testing purposes!
                        echo "</tr>";
                     }
                 }

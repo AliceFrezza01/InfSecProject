@@ -43,8 +43,23 @@ if(isset($_POST['register'])){
             $concat = $password . $salt;
             $password = hash('sha384', $concat);
 
-            $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES (?,?,?,?,?)");
-            $insertion_query->bind_param('sssii', $name, $username, $password, $isVendor, $salt);
+
+            //RSA
+            $config = array(
+                'digest_alg' => 'sha256',
+                'private_key_bits' => 2048,
+                'private_key_type' => OPENSSL_KEYTYPE_RSA,
+            );
+
+            $keyPair=openssl_pkey_new($config);     // Create the keypair
+            openssl_pkey_export($keyPair, $privateKey);     // Get private key
+            $publicKey=openssl_pkey_get_details($keyPair);      // Get public key
+            $publicKey=$publicKey["key"];                       // Get public key
+
+
+            //DB Register User
+            $insertion_query = $con->prepare("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`, `privateKey`, `publicKey`) VALUES (?,?,?,?,?,?,?)");
+            $insertion_query->bind_param('sssiiss', $name, $username, $password, $isVendor, $salt, $privateKey, $publicKey);
             $insertion_query->execute();
 
             if ($insertion_query->affected_rows != 1) {

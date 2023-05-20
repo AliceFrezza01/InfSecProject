@@ -77,8 +77,8 @@ if(isset($_SESSION['loginsession'])){
         $isProductOwner = true;
 }
 
-//get Name of logged in user
-$sqlLoggedIn = "SELECT name FROM user WHERE id =?";
+//get Name + public Key of logged in user
+$sqlLoggedIn = "SELECT name, privateKey FROM user WHERE id =?";
 $resultLoggedIn = $con->prepare($sqlLoggedIn);
 $resultLoggedIn->bind_param('i', $loggedInUserID);
 $resultLoggedIn->execute();
@@ -86,6 +86,7 @@ $resultLoggedIn = $resultLoggedIn->get_result();
 $rowLI = $resultLoggedIn->fetch_assoc();
 
 $loggedInUserName = $rowLI["name"];
+$privateKey = $rowLI["privateKey"];
 
 
 //BUY PRODUCT BUTTON
@@ -97,10 +98,17 @@ if (isset($_POST['buyProduct'])) {
         $date = date('Y-m-d H:i:s');
         console_log($date);
 
+
+        //DSA
+        $signatureMessage = "rightful purchase";
+        openssl_sign($signatureMessage, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+        $castSignature = base64_encode($signature);
+
+
         if($isLoggedIn){
-            $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`) VALUES (?,?,?)";
+            $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`, `signature`) VALUES (?,?,?,?)";
             $result = $con->prepare($sqlBuyProduct);
-            $result->bind_param('iis', $productID, $loggedInUserID, $date);
+            $result->bind_param('iiss', $productID, $loggedInUserID, $date, $castSignature);
             $result->execute();
 
             if($result->affected_rows != 1) {

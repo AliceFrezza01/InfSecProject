@@ -244,3 +244,4 @@ Reference: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web
 
 xssSanification implements a function called ```sanitation``` which takes in input three variables: ``` $text, $dataType, $quoteStrict ```. According to the data type of the variable inserted and whether we are encoding the quotes strictly, 
 it will return as output the safe version of the previous data. More documentation of the function can be found on the file itself.
+
