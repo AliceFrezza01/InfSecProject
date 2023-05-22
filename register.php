@@ -46,13 +46,14 @@ if(isset($_POST['register'])){
 
             //RSA
             $config = array(
+                "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
                 'digest_alg' => 'sha256',
                 'private_key_bits' => 2048,
                 'private_key_type' => OPENSSL_KEYTYPE_RSA,
             );
 
             $keyPair=openssl_pkey_new($config);     // Create the keypair
-            openssl_pkey_export($keyPair, $privateKey);     // Get private key
+            openssl_pkey_export($keyPair, $privateKey, NULL, $config);     // Get private key
             $publicKey=openssl_pkey_get_details($keyPair);      // Get public key
             $publicKey=$publicKey["key"];                       // Get public key
 
