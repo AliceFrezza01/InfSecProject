@@ -5,8 +5,6 @@ include ('connect.php');
 
 global $con;
 
-echo strtoupper(substr(PHP_OS, 0, 3));
-
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
     header('location: landingpage.php');
