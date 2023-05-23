@@ -45,14 +45,30 @@ if(isset($_POST['register'])){
 
 
             //RSA
-            $config = array(
-                "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
-                'digest_alg' => 'sha256',
-                'private_key_bits' => 2048,
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            );
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $config = array(
+                    "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
+                    'digest_alg' => 'sha256',
+                    'private_key_bits' => 2048,
+                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
+                );
+            } else {
+                $config = array(
+                    "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
+                    'digest_alg' => 'sha256',
+                    'private_key_bits' => 2048,
+                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
+                );
+            }
 
             $keyPair=openssl_pkey_new($config);     // Create the keypair
+
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
+                openssl_pkey_export($keyPair, $privateKey, NULL, $config);
+            } else {
+                openssl_pkey_export($keyPair, $privateKey);
+            }
+            
             openssl_pkey_export($keyPair, $privateKey, NULL, $config);     // Get private key
             $publicKey=openssl_pkey_get_details($keyPair);      // Get public key
             $publicKey=$publicKey["key"];                       // Get public key
