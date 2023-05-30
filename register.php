@@ -22,16 +22,18 @@ if(isset($_POST['register'])){
     if ($name=="" || $username=="" || $password=="") {
         echo "<script type='text/javascript'>alert('The account is not created, due to the credentials. Check the types and that the values are not empty. Then retry.');</script>";
     } else {
-    
-    //check if user already exists
-    $search_result = $con->prepare("SELECT * FROM user WHERE email=?");
-    $search_result->bind_param('s', $username);
-    $search_result->execute();
-    $result = $search_result->get_result();
 
-    if($result->num_rows == 1){
-        echo('<p style="color:red">User with this email already exists</p>');
-    }else {
+    $ispwcomplex = validatepasswod($password);
+    if($ispwcomplex){
+        //check if user already exists
+        $search_result = $con->prepare("SELECT * FROM user WHERE email=?");
+        $search_result->bind_param('s', $username);
+        $search_result->execute();
+        $result = $search_result->get_result();
+
+        if($result->num_rows == 1){
+            echo('<p style="color:red">User with this email already exists</p>');
+        }else {
             //create new user
             if($usertype == 'vendor'){
                 $isVendor = 1;
@@ -83,6 +85,23 @@ if(isset($_POST['register'])){
             }
 
         }
+    }
+    }
+
+}
+
+function validatepasswod($password){
+
+    $uppercase = preg_match('@[A-Z]@', $password);
+    $lowercase = preg_match('@[a-z]@', $password);
+    $number    = preg_match('@[0-9]@', $password);
+    $specialChars = preg_match('@[^\w]@', $password);
+
+    if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
+        echo('<p style="color:red">Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character.</p>');
+        return false;
+    }else{
+        return true;
     }
 }
 
