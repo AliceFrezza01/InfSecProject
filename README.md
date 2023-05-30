@@ -1,7 +1,22 @@
 # InfSecProject
 
+Group members: Victoria Winkler, Alice Frezza, Linda Pircher
 
-#SOLUTIONS for SETUP Issues
+In this Github reposityory there are two branches:
+- main: insecure version of the application
+- secureversion: secure version of the application
+
+# User manual
+
+To install the application you need XAMPP installed on your PC.
+Then follow the following steps:
+- clone repository in the htdocs folder of your XAMPP application
+- start in the XAMPP controll pannel Apache and MySQL
+- go in your browser on http://localhost/phpmyadmin/ and execute populateDB in the SQL tab
+- check if the data in the connect.php are correct
+- lounch in your browser http://localhost/InfSecProject/login.php
+
+## SOLUTIONS for SETUP Issues
 if SQL Database does not restart -> kill in Activity Monitor search for _mysql
 
 enable event_scheduler for compatibility with PHPStorm!
@@ -15,10 +30,10 @@ to access *MariaDB Monitor*: /Applications/XAMPP/xamppfiles/bin and type ./mysql
 set up live edit: Deployment + local or mounted folder -> Folder: htdocs, Web Server: http://localhost/infsec_project01
 
 
-###CSS not applying
+### CSS not applying
 Browser Refresh -> CMD/CTRL + SHIFT + R
 
-###Multiple Ports for XAMPP -> test XSRF
+### Multiple Ports for XAMPP -> test XSRF
 - XAMPP/etc -> httpd.conf add Listen Port and uncomment:
     add Listen 8001
     uncomment: Options Indexes FollowSymLinks ExecCGI Includes
