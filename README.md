@@ -1,6 +1,9 @@
 # InfSecProject
 
-Group members: Victoria Winkler, Alice Frezza, Linda Pircher
+Group members: 
+- Victoria Winkler
+- Alice Frezza, 
+- Linda Maria Pircher
 
 In this Github repository there are two branches:
 - main: insecure version of the application
@@ -10,13 +13,13 @@ In this Github repository there are two branches:
 To install the application you need XAMPP installed on your PC.
 Then follow the following steps:
 - clone repository in the htdocs folder of your XAMPP application
-- start in the XAMPP control panel Apache and MySQL
+- start in the XAMPP control panel the Apache and MySQL Server
 - go in your browser on http://localhost/phpmyadmin/ and execute populateDB in the SQL tab
-- check if the data in the `connect.php` are correct
-- launch in your browser http://localhost/InfSecProject/login.php
+- check if the data in the `connect.php` is correct, you might need a different port
+- launch http://localhost/InfSecProject/login.php in your browser
 
 ## SOLUTIONS for SETUP Issues
-if SQL Database does not restart -> kill in Activity Monitor search for _mysql
+if SQL Database does not start -> kill in Activity Monitor -> search for _mysql
 
 # Insecure Version Description
 
@@ -76,9 +79,10 @@ but in the orders.php` page, there is a check ensuring that the number passed co
     ``` 
 
 ## XSRF/CSRF
-DEF: TODO
-For example on the product info page:
-- XSRF=CSRF due to Form submissions: it is possible for a hacker to impersonate another User whilst the User is logged in.
+Cross Site Request Forgery can be used to manipulate or retrieve data whilst the user is logged in.(=ongoing session)
+It can happen from a different Server and can often go unnoticed by the user.
+It usually happens when doing Form submissions for example on the product info page.
+- It is possible for a hacker to impersonate the currently logged in user.
   For example a click on an innocent Button on any web page might trigger a purchase of a product on this website.
   Example Code which can be used for XSRF:
     ```
@@ -148,7 +152,7 @@ Reference: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web
 xssSanitation.php implements a function called ```sanitation``` which takes in input three variables: ``` $text, $dataType, $quoteStrict ```. According to the data type of the variable inserted and whether we are encoding the quotes strictly, 
 it will return as output the safe version of the previous data. More documentation of the function can be found on the file itself.
 
-## **XSRF protection**
+## **Cross-Site-Request-Forgery (=CSRF or XSRF) protection**
 Methods to prevent XSRF attacks are:
 - forms should use POST instead of GET
 - verifying the HTTP headers "origin" and "referer", unfortunately these can easily be corrupted and are not mandatory for browsers to include
@@ -185,9 +189,19 @@ $token = input($_POST['token']);
 ```
 
 
-## **Buy product with digital signature**
+## **Buy product with digital signature algorithm (=DSA)**
+The DSA is used to ensure that the user who is buying a product is a valid user of the website and not an impersonator, hacker or computer.
+### Implementation
+The DSA produces a signature which uses a signature-message and the privateKey of the buyer and encodes it using an algorithm such as SHA256.
+```
+$signatureMessage = "rightful purchase";
+openssl_sign($signatureMessage, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+```
 
-...
+On validation the Seller has access to the publicKey of the Buyer and knows the signature-message and using the same algorithm decodes the signature.
+```
+$verification = openssl_verify($signatureMessage, $signature, $publicKey, "sha256WithRSAEncryption");
+```
 
 ## **Securing the chat**
 

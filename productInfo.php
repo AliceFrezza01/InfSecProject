@@ -134,14 +134,12 @@ if (isset($_POST['buyProduct'])) {
             $date = date('Y-m-d H:i:s');
 
             //Digital Signature Algorithm (=DSA)
-            $signatureMessage = "rightful purchase";
-            openssl_sign($signatureMessage, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-            $castSignature = base64_encode($signature);
+            $signature = createSignature($privateKey);
 
             //send to DB
             $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`, `signature`) VALUES (?,?,?,?)";
             $result = $con->prepare($sqlBuyProduct);
-            $result->bind_param('iiss', $productID, $loggedInUserID, $date, $castSignature);
+            $result->bind_param('iiss', $productID, $loggedInUserID, $date, $signature);
             $result->execute();
 
             //immediate response if the purchase was successful or not

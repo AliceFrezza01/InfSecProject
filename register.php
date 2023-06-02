@@ -3,6 +3,7 @@ session_start();
 
 include ('connect.php');
 include ('xssSanitation.php');
+include('RSAandDSA.php');
 
 global $con;
 
@@ -15,8 +16,16 @@ if(isset($_SESSION['loginsession'])){
 if(isset($_POST['register'])){
 
     $usertype = input($_POST['usertype']);
-    $name = input(sanitation($_POST['name'], "string", false)); //username
-    $username = input(sanitation($_POST['user'], "email", true)); //email
+    try {
+        $name = input(sanitation($_POST['name'], "string", false));
+    } catch (Exception $e) {
+        echo "invalid input";
+    } //username
+    try {
+        $username = input(sanitation($_POST['user'], "email", true));
+    } catch (Exception $e) {
+        echo "invalid input";
+    } //email
     $password = input($_POST['password']);
 
     if ($name=="" || $username=="" || $password=="") {
@@ -46,36 +55,10 @@ if(isset($_POST['register'])){
             $password = hash('sha384', $concat);
 
 
-            /**
-             * Create RSA KeyPair, different config settings necessary for Windows and MAC
-             */
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                $config = array(
-                    "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
-                    'digest_alg' => 'sha256',
-                    'private_key_bits' => 2048,
-                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
-                );
-            } else {
-                $config = array(
-                    'digest_alg' => 'sha256',
-                    'private_key_bits' => 2048,
-                    'private_key_type' => OPENSSL_KEYTYPE_RSA,
-                );
-            }
-
-            $keyPair=openssl_pkey_new($config);     // Create the keypair
-
-            // get private key
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
-                openssl_pkey_export($keyPair, $privateKey, NULL, $config);
-            } else {
-                openssl_pkey_export($keyPair, $privateKey);
-            }
-            
-//            openssl_pkey_export($keyPair, $privateKey, NULL, $config);     // Get private key
-            $publicKey=openssl_pkey_get_details($keyPair);      // Get public key
-            $publicKey=$publicKey["key"];                       // Get public key
+            //RSA
+            $keyPair = generateKeypair();     // Create the keypair
+            $privateKey = getPrivateKey($keyPair);
+            $publicKey = getPublicKey($keyPair);
 
 
             //DB Register User

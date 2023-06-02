@@ -4,7 +4,7 @@
 <?php
 
     include ('connect.php');
-    include('authenticationUser.php');
+    include ('authenticationUser.php');
 
     global $con;
     global $user;
@@ -75,27 +75,8 @@
                        $rowNameBuyer = $nameBuyer->fetch_assoc();
 
 
-
-                       //DSA
-                        $verifiedPurchase = "";
-                        $signatureMessage = "rightful purchase";    //don't change -> is linked to signature
-
-                        $decodeSignature = base64_decode($row['signature']);
-
-
-                        if ($decodeSignature == null){          // TODO delete, as it should not be necessary if every purchase has a signature
-                            $verifiedPurchase = "no signature given";
-                        }
-                        else {
-                            $verification = openssl_verify($signatureMessage, $decodeSignature, $rowNameBuyer['publicKey'], "sha256WithRSAEncryption");
-                            if ($verification == 1){
-                                $verifiedPurchase = "valid digital Signature";
-                            }
-                            else {
-                                $verifiedPurchase = "tampered signature";
-                            }
-                        }
-
+                        //DSA verification
+                        $verifiedPurchase = validateSignature($row['signature'], $rowNameBuyer['publicKey']);
 
 
                        //content of the table: name, price, buyerDate and email of the buyer
@@ -105,7 +86,7 @@
                            echo "<td class=\"orderTable\">" . $row['price'] . "</td>";
                            echo "<td class=\"orderTable\">" . $row['buyDate'] . "</td>";
                            echo "<td class=\"orderTable\">" . $rowNameBuyer['email'] . "</td>";
-                           echo "<td class=\"orderTable\">" . $verifiedPurchase . "</td>";          //TODO does not need to be shown like this -> only for testing purposes!
+                           echo "<td class=\"orderTable\">" . $verifiedPurchase . "</td>";
                        echo "</tr>";
                     }
                 }

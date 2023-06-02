@@ -26,7 +26,7 @@
 
         $token = input($_POST['token']);
 
-        if (verifyToken($token)) {      //TODO is it necessary here?
+        if (verifyToken($token)) {
             session_destroy();
             ?>
             <script>
