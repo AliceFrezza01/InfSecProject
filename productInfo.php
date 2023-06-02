@@ -16,6 +16,7 @@ session_start();
 include ('connect.php');
 include ('authenticationUser.php');
 include ('xssSanitation.php');
+include ('RSAandDSA.php');
 
 
 //GLOBAL VARIABLES

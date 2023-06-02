@@ -5,6 +5,7 @@
 
     include ('connect.php');
     include ('authenticationUser.php');
+    include ('RSAandDSA.php');
 
     global $con;
     global $user;

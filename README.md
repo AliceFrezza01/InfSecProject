@@ -14,7 +14,7 @@ To install the application you need XAMPP installed on your PC.
 Then follow the following steps:
 - clone repository in the htdocs folder of your XAMPP application
 - start in the XAMPP control panel the Apache and MySQL Server
-- go in your browser on http://localhost/phpmyadmin/ and execute populateDB in the SQL tab
+- go in your browser on http://localhost/phpmyadmin/ and execute populateDB in the SQL tab !!!!!! OR SAMPLEDB!!!!!!!!!
 - check if the data in the `connect.php` is correct, you might need a different port
 - launch http://localhost/InfSecProject/login.php in your browser
 
