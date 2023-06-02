@@ -1,6 +1,6 @@
 <!-- TOP MENU -->
 <div class="topnav">
-    <a class="active" href="landingpage.php">Landing Page</a>
+    <a class="active" href="landingPage.php">Home</a>
     <a href="chat.php">Chat</a>
     <?php
 
@@ -12,8 +12,11 @@
         echo "<a href=\"orders.php?vendorId=" . $userid . "\">Orders</a>";
     }
     ?>
-    <form method='post'>
-        <input type="hidden" name="token" value="<?=$_SESSION["token"]?>">
-        <input class="button" type="submit" name="logout" value="LOG OUT">
-    </form>
+    <div class="logout_div">
+        <form class="logout_form" method='post'>
+            <input type="hidden" name="token" value="<?=$_SESSION["token"]?>">
+            <input class="button_logout" type="submit" name="logout" value="LOG OUT">
+        </form>
+    </div>
+
 </div>

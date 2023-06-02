@@ -3,7 +3,7 @@ session_start();
 ?>
 <?php
     include ('connect.php');
-    include ('authentificationUser.php');
+    include('authenticationUser.php');
     include ('xssSanitation.php');
 
     global $con;
@@ -38,9 +38,10 @@ session_start();
                     echo "<script type='text/javascript'>alert('The product is inserted successully!');</script>";
                 }
             }
-        
         }
-
+        else {
+            exit('invalid token');
+        }
     }
 
     $con->close();
@@ -48,7 +49,7 @@ session_start();
 
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
+<?php $title = 'Shop: New Product'; include('head.php') ?>
     <body>
         <!-- TOP MENU -->
         <?php include('menu.php') ?>

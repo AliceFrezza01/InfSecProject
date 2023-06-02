@@ -4,7 +4,7 @@
 <?php
 
     include ('connect.php');
-    include ('authentificationUser.php');
+    include ('authenticationUser.php');
     include ('xssSanitation.php');
 
     global $con;
@@ -14,13 +14,29 @@
     $lowerStringInserted = "";
 
     //function for the search button
-    if (isset($_POST['search'])) {          //TODO does it need CSRF prevention?
-        $lowerStringInserted = sanitation($_POST['toSearch'], "string", true);
+    if (isset($_POST['search'])) {
+        $token = input($_POST['token']);
+        if (verifyToken($token)) {
+            try {
+                $lowerStringInserted = sanitation($_POST['toSearch'], "string", true);
+            } catch (Exception $e) {
+                echo 'invalid input';
+            }
+        }
+        else {
+            exit('invalid token');
+        }
     }
 
     //function for the reset button
-    if (isset($_POST['resetSearch'])) {     //TODO does it need CSRF prevention?
-        $lowerStringInserted = "";
+    if (isset($_POST['resetSearch'])) {
+        $token = input($_POST['token']);
+        if (verifyToken($token)) {
+            $lowerStringInserted = "";
+        }
+        else {
+            exit('invalid token');
+        }
     }
 
     //this query returns the list of products with a name similar at the one inserted by the user in the search bar
@@ -38,7 +54,7 @@
 
 <!DOCTYPE html>
 <html lang="en-us">
-    <?php include('head.php') ?>
+    <?php $title = 'Shop: Home'; include('head.php') ?>
     <body>
        <?php include('menu.php') ?>
         <div class="headerHello">
@@ -48,14 +64,15 @@
                 <?php
                 if ($user['isVendor']==1) {
                     echo "<div style=\"margin-top: 25px\">";
-                    echo "<a href=\"productNew.php\" class=\"button \">Add new Product</a>";
+                    echo "<a href=\"productNew.php\" class=\"button\">Add new Product</a>";
                     echo "</div>";
                 }
                 ?>
             <!-- SEARCH BAR -->
             <div>
                 <form method="post">
-                    <input type="text" name="toSearch" placeholder="Search..">
+                    <input type="hidden" name="token" value="<?=$_SESSION["token"]?>">
+                    <input style="width: 165px" type="text" name="toSearch" placeholder="Search...">
                     <input class="button" type="submit" name="search" value="Search" />
                     <input class="button" type="submit" name="resetSearch" value="Reset" />
                 </form>

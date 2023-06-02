@@ -4,7 +4,7 @@ session_start();
 <?php
 
 include ('connect.php');
-include ('authentificationUser.php');
+include('authenticationUser.php');
 include ('xssSanitation.php');
 
 global $con;
@@ -112,7 +112,7 @@ if(isset($_GET['id'])){
 
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
+<?php $title = 'Shop: Chat - ' . $chatwithusername ; include('head.php') ?>
 <body>
 <div>
     <?php include('menu.php') ?>

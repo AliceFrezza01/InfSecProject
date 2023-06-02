@@ -8,7 +8,7 @@ global $con;
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 //if button is clicked
@@ -23,8 +23,8 @@ if(isset($_POST['register'])){
         echo "<script type='text/javascript'>alert('The account is not created, due to the credentials. Check the types and that the values are not empty. Then retry.');</script>";
     } else {
 
-    $ispwcomplex = validatepasswod($password);
-    if($ispwcomplex){
+    $isPWComplex = validatePassword($password);
+    if($isPWComplex){
         //check if user already exists
         $search_result = $con->prepare("SELECT * FROM user WHERE email=?");
         $search_result->bind_param('s', $username);
@@ -46,7 +46,9 @@ if(isset($_POST['register'])){
             $password = hash('sha384', $concat);
 
 
-            //RSA
+            /**
+             * Create RSA KeyPair, different config settings necessary for Windows and MAC
+             */
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 $config = array(
                     "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
@@ -56,7 +58,6 @@ if(isset($_POST['register'])){
                 );
             } else {
                 $config = array(
-                    "config" => "C:/xampp/php/extras/openssl/openssl.cnf",
                     'digest_alg' => 'sha256',
                     'private_key_bits' => 2048,
                     'private_key_type' => OPENSSL_KEYTYPE_RSA,
@@ -65,13 +66,14 @@ if(isset($_POST['register'])){
 
             $keyPair=openssl_pkey_new($config);     // Create the keypair
 
+            // get private key
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') { 
                 openssl_pkey_export($keyPair, $privateKey, NULL, $config);
             } else {
                 openssl_pkey_export($keyPair, $privateKey);
             }
             
-            openssl_pkey_export($keyPair, $privateKey, NULL, $config);     // Get private key
+//            openssl_pkey_export($keyPair, $privateKey, NULL, $config);     // Get private key
             $publicKey=openssl_pkey_get_details($keyPair);      // Get public key
             $publicKey=$publicKey["key"];                       // Get public key
 
@@ -84,8 +86,8 @@ if(isset($_POST['register'])){
             if ($insertion_query->affected_rows != 1) {
                 echo('<p style="color:red">Error creating user</p>');
             } else {
-                $createduserid = mysqli_insert_id($con);
-                $_SESSION['loginsession'] = $createduserid;
+                $createdUserId = mysqli_insert_id($con);
+                $_SESSION['loginsession'] = $createdUserId;
 
                 // GENERATE RANDOM CSRF TOKEN + SET TIMEOUT FOR TOKEN
                 try {
@@ -97,7 +99,7 @@ if(isset($_POST['register'])){
                     echo "token not generated";
                 }
 
-                header('location: landingpage.php');
+                header('location: landingPage.php');
             }
 
         }
@@ -106,7 +108,7 @@ if(isset($_POST['register'])){
 
 }
 
-function validatepasswod($password){
+function validatePassword($password){
 
     $uppercase = preg_match('@[A-Z]@', $password);
     $lowercase = preg_match('@[a-z]@', $password);
@@ -130,7 +132,7 @@ $con->close();
 
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
+<?php $title = 'Shop: Register'; include('head.php') ?>
 <body>
 <div class="logindiv">
     <h1> Register </h1>

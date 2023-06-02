@@ -1,18 +1,32 @@
 <?php
+
+/**
+ * PRODUCT INFORMATION PAGE
+ *
+ * holds all the information such as Price, Description, Seller ecc. of a Product
+ * allows to purchase a Product (Buy Product)
+ * Reviews can be written or replied to
+ * Seller can be directly contacted using the Chat function
+ */
+
+
 session_start();
 
-//error detection
-ini_set( 'error_reporting', E_ALL );
-ini_set( 'display_errors', true );
-
-//imports
-include 'connect.php';
-include ('authentificationUser.php');
+//IMPORTS
+include ('connect.php');
+include ('authenticationUser.php');
 include ('xssSanitation.php');
 
+
+//GLOBAL VARIABLES
 global $con;
 global $user;
 
+
+/**
+ * Only allow for valid Product Pages
+ * otherwise redirect to LandingPage
+ */
 //count ALL Products!
 $sqlAllProducts = "SELECT COUNT(*) AS count FROM product;";
 $resultAllProducts = $con->query($sqlAllProducts);
@@ -23,11 +37,15 @@ $nrAllProducts = $rowAP['count'];
 //get productID from Landing Page
 $productID = $_GET['productId'];
 
-//if invalid ProductID -> LANDINGPAGE
+//if invalid ProductID -> LANDING PAGE
 if(is_int($productID) && $productID != NULL && $nrAllProducts <= $productID) {
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
+
+/**
+ * get Product Information from DB using ProductID passed from landingPage.php
+ */
 //DB Calls for Product
 $sqlProduct = "SELECT name, price, imgLink, creatorUserID FROM product WHERE id =?";
 $result = $con->prepare($sqlProduct);
@@ -41,8 +59,9 @@ $productPrice = $row['price'];
 $productImgLink = $row['imgLink'];
 $productCreatorID = $row['creatorUserID'];
 
-console_log('Product Creator ID: ' . $productCreatorID);
-
+/**
+ * get Seller Information using the CreatorsID
+ */
 //DB calls for Product Creator Details
 $sqlCreator = "SELECT name, email FROM user WHERE id=?";
 $resultCreator = $con->prepare($sqlCreator);
@@ -53,6 +72,10 @@ $rowC = $resultCreator->fetch_assoc();
 
 $productCreatorName = $rowC['name'];
 
+
+/**
+ * Count how often the Product has been purchased
+ */
 //DB calls for purchased Product
 $sqlPurchase = "SELECT COUNT(productID) AS count FROM purchasedBy WHERE productID =?";
 $resultPurchase = $con->prepare($sqlPurchase);
@@ -62,9 +85,12 @@ $resultPurchase = $resultPurchase->get_result();
 $rowPur = $resultPurchase->fetch_assoc();
 
 $productPurchasedCount = $rowPur['count'];
-console_log($productPurchasedCount);
 
-//Verify if loggedInUser is Vendor of this product
+
+/**
+ * Verify if the Logged in User is also the Seller of the Product
+ * necessary to determine whether the logged in User can purchase the Product and reply or write reviews
+ */
 $isProductOwner = false;
 $isLoggedIn = false;
 
@@ -77,40 +103,48 @@ if(isset($_SESSION['loginsession'])){
         $isProductOwner = true;
 }
 
-//get Name + public Key of logged in user
-$sqlLoggedIn = "SELECT name, privateKey FROM user WHERE id =?";
-$resultLoggedIn = $con->prepare($sqlLoggedIn);
-$resultLoggedIn->bind_param('i', $loggedInUserID);
-$resultLoggedIn->execute();
-$resultLoggedIn = $resultLoggedIn->get_result();
-$rowLI = $resultLoggedIn->fetch_assoc();
+/**
+ * get the Name and private RSA-Key of a User to be able to purchase a Product
+ */
+if(!$isProductOwner){
+    $sqlLoggedIn = "SELECT name, privateKey FROM user WHERE id =?";
+    $resultLoggedIn = $con->prepare($sqlLoggedIn);
+    $resultLoggedIn->bind_param('i', $loggedInUserID);
+    $resultLoggedIn->execute();
+    $resultLoggedIn = $resultLoggedIn->get_result();
+    $rowLI = $resultLoggedIn->fetch_assoc();
 
-$loggedInUserName = $rowLI["name"];
-$privateKey = $rowLI["privateKey"];
+    $loggedInUserName = $rowLI["name"];
+    $privateKey = $rowLI["privateKey"];
+}
 
 
+/**
+ * buy product function triggered by clicking "BUY PRODUCT" Button
+ * uses digital Signature to ensure the purchase is done by a valid user
+ */
 //BUY PRODUCT BUTTON
 if (isset($_POST['buyProduct'])) {
+    if($isLoggedIn){
 
-    $token = input($_POST['token']);
+        //Validate Session Token -> prevent XSRF
+        $token = input($_POST['token']);
 
-    if (verifyToken($token)) {
-        $date = date('Y-m-d H:i:s');
-        console_log($date);
+        if (verifyToken($token)) {
+            $date = date('Y-m-d H:i:s');
 
+            //Digital Signature Algorithm (=DSA)
+            $signatureMessage = "rightful purchase";
+            openssl_sign($signatureMessage, $signature, $privateKey, OPENSSL_ALGO_SHA256);
+            $castSignature = base64_encode($signature);
 
-        //DSA
-        $signatureMessage = "rightful purchase";
-        openssl_sign($signatureMessage, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-        $castSignature = base64_encode($signature);
-
-
-        if($isLoggedIn){
+            //send to DB
             $sqlBuyProduct = "INSERT INTO purchasedBy (`productID`, `userID`, `buyDate`, `signature`) VALUES (?,?,?,?)";
             $result = $con->prepare($sqlBuyProduct);
             $result->bind_param('iiss', $productID, $loggedInUserID, $date, $castSignature);
             $result->execute();
 
+            //immediate response if the purchase was successful or not
             if($result->affected_rows != 1) {
                 ?>
                 <script>
@@ -125,18 +159,17 @@ if (isset($_POST['buyProduct'])) {
                 </script>
                 <?php
             }
-        }
-        console_log('bought product');
         header("Refresh:0");
+        }
+        else {
+            exit('invalid token');
+        }
     }
-    else {
-        exit('invalid token');
-    }
-
 }
 
-
-//get ALL REVIEWS for ProductID
+/**
+ * get all Reviews for the product, using ProductID
+ */
 $sqlReview = "SELECT id, text, replyOfReviewID, userID FROM review WHERE productID = ? ORDER BY replyOfReviewID DESC, id ";
 $resultReview = $con->prepare($sqlReview);
 $resultReview->bind_param('i', $productID);
@@ -144,10 +177,10 @@ $resultReview->execute();
 $resultReview = $resultReview->get_result();
 $nrReviews = $resultReview->num_rows;
 
-console_log('result NR: ' . $nrReviews); //TODO delete when done
-
-
-//get Reviewer User Names
+/**
+ * get the Reviewers User Names
+ * stores them in an array where the arrays indexes matches their userIDs
+ */
 if($nrReviews > 0){
     $reviews = [];
     while ($row = $resultReview->fetch_assoc()) {
@@ -176,7 +209,6 @@ if($nrReviews > 0){
 
     mysqli_data_seek($resultAllUserNames, 0);
 
-
     $positionArray = [];
     $positionNamesArray = [];
 
@@ -201,14 +233,19 @@ if($nrReviews > 0){
 }
 
 
-
-//write Review
+/**
+ * post Review to DB, triggered by "WRITE REVIEW" Button in the inputFunction()
+ */
 if(isset($_POST['writeReview'])){
 
     $token = input($_POST['token']);
 
     if (verifyToken($token)) {
-        $text = input(sanitation($_POST['reviewText'], "string", false));
+        try {
+            $text = input(sanitation($_POST['reviewText'], "string", false));
+        } catch (Exception $e) {
+            echo "invalid input";
+        }
         $replyOfReviewID = input($_POST['currentReviewID']);
 
         $sqlWriteReview = "INSERT INTO review (`productID`, `userID`, `text`, `replyOfReviewID`) VALUES (?,?,?,?)";
@@ -220,9 +257,13 @@ if(isset($_POST['writeReview'])){
     }
 }
 
-
-// submit review FUNCTION
-function inputFunction($currentReviewID, $buttonName, $placeholder){
+/**
+ * The Submit-Review Form
+ * @param $currentReviewID Integer userID of logged in user
+ * @param $buttonName String can be either "submit review" or "submit response", depending whether the logged in user is also the seller
+ * @param $placeholder String which holds the user input text
+ */
+function inputFunction(int $currentReviewID, String $buttonName, String $placeholder){
     echo "<form action=\"\" method=\"post\" style=\"text-indent:30px;\">";
         echo "<input type='hidden' name='token' value='{$_SESSION['token']}'/>";
         echo "<input type='hidden' name='currentReviewID' value='$currentReviewID'/>";
@@ -231,8 +272,15 @@ function inputFunction($currentReviewID, $buttonName, $placeholder){
     echo "</form>";
 }
 
-//chat link or Text
-function chatLink($loggedInUserID, $currentUserID, $reviewerName, $productCreatorID){
+/**
+ * CHAT LINK to Seller or PLAIN TEXT in Reviews
+ * determines the color of the Reviewers name as well as whether there is a link to the CHAT function or not
+ * @param $loggedInUserID Integer userID of logged in user
+ * @param $currentUserID Integer userID of user who wrote the Review/Response
+ * @param $reviewerName String name of the user who wrote the Review/Response
+ * @param $productCreatorID Integer userID of Seller
+ */
+function chatLink(int $loggedInUserID, int $currentUserID, String $reviewerName, int $productCreatorID){
     $setColor = NULL ;
 
     if ($currentUserID == $productCreatorID){
@@ -252,20 +300,17 @@ function chatLink($loggedInUserID, $currentUserID, $reviewerName, $productCreato
 
 
 $con->close();
-
 ?>
 
 
-
-<!--HTML CODE-->
-
-
-
+<!--HTML-->
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
-
+<!--HEADER-->
+<?php $title = 'Shop: '. $productName; include('head.php') ?>
+<!--BODY-->
     <body>
+<!--    MENU BAR-->
      <?php include('menu.php') ?>
      <div class="productInfo">
 <!--    DISPLAY PRODUCT-->
@@ -296,24 +341,20 @@ $con->close();
                 </div>
             </div>
         </div>
-<!--    REVIEWS-->
+<!--    DISPLAY REVIEWS-->
         <div style="padding: 14px 16px;" class="reviews">
             <h2 class="title2"> Reviews </h2>
 
-
-
             <?php
-
             mysqli_data_seek($resultReview, 0);     //resets fetched data pointer to 0
 
-            $currentBulkID = -1;
+            $currentBulkID = -1;    //Bulk refers to a Set of Reviews which belong together, it consists of an initial Review with responses
             $rowRR = NULL;
 
             if($nrReviews != 0){
                 $rowRR = $resultReview->fetch_assoc();
                 $currentBulkID = $rowRR['replyOfReviewID'];
             }
-
 
             //NEW REVIEW
             if(!$isProductOwner){

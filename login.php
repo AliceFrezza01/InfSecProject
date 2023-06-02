@@ -7,7 +7,7 @@ global $con;
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 //if button is clicked
@@ -17,9 +17,7 @@ if(isset($_POST['login'])){
     try {
         $_SESSION["token"] = bin2hex(random_bytes(32));
         $_SESSION["token-expiry"] = time() + 3600;  //after 1h
-        console_log('token generated');
     } catch (Exception $e) {
-        console_log('token not generated');
         echo "token not generated";
     }
 
@@ -40,7 +38,7 @@ if(isset($_POST['login'])){
         $password = hash('sha384', $concat);
         if($password == $search_object->password){
             $_SESSION['loginsession'] = $search_object->id;
-            header('location: landingpage.php');
+            header('location: landingPage.php');
         }else{
             echo('<p style="color:red">Wrong data</p>');
         }
@@ -57,7 +55,7 @@ $con->close();
 
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
+<?php $title = 'Shop: Login'; include('head.php') ?>
 <body>
     <div class="logindiv">
         <h1> Login </h1>

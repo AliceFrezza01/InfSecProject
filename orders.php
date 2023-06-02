@@ -4,7 +4,7 @@
 <?php
 
     include ('connect.php');
-    include ('authentificationUser.php');
+    include('authenticationUser.php');
 
     global $con;
     global $user;
@@ -35,7 +35,7 @@
 
 <!DOCTYPE html>
 <html lang="en-us">
-<?php include('head.php') ?>
+<?php $title = 'Shop: Orders'; include('head.php') ?>
     <body>
         <!-- TOP MENU -->
         <?php include('menu.php') ?>

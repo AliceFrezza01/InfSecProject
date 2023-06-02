@@ -2,17 +2,17 @@
 
 /**
  * Takes as input a possible unsafe data and returns as output a sanitized and encoded data,
- * which is resistent in case of XSS attacks. In cases in which the input string does not comply
+ * which is resistant in case of XSS attacks. In cases in which the input string does not comply
  * at all with the type it should be, then an empty string is returned. 
  *
  * 
- * @param $text             The input value that needs to be sanitized. 
- * @param $dataType         The possible values are "string", "email", "number_float",
+ * @param $text             String the input value which needs to be sanitized.
+ * @param $dataType         String the possible values are "string", "email", "number_float",
  *                          "number_int" and "url". If other value types are inserted, then they are
  *                          automatically treated as "string".
- * @param $quoteStrict      True, if we don't want to allow double quotes to be encoded (by default). False otherwise. 
- * @return 
- * @throws Exception If element in array is not an integer
+ * @param $quoteStrict      Boolean TRUE if we don't want to allow double quotes to be encoded (by default). FALSE otherwise.
+ * @return                  String sanitized and encoded data OR empty String
+ * @throws                  Exception If element in array is not an integer
  */
 function sanitation($text, $dataType, $quoteStrict = true) {
 
@@ -22,7 +22,7 @@ function sanitation($text, $dataType, $quoteStrict = true) {
     //strip_tags — Strip HTML and PHP tags from a string
     $text = strip_tags($text);
 
-    //htmlspecialchars — Convert special characters to HTML entities
+    //htmlspecialchars() — Convert special characters to HTML entities
     if ($quoteStrict)
         $text = htmlspecialchars($text, ENT_QUOTES, "UTF-8");
     else 
@@ -48,7 +48,5 @@ function sanitation($text, $dataType, $quoteStrict = true) {
         return "";
     } 
 
-    return $text;
+//    return $text;     //TODO possibly can be deleted?
 }
-
-?>
