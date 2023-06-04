@@ -31,7 +31,7 @@ if(isset($_POST['register'])){
         }else{
             $isVendor = 0;
         }
-        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`, `salt`) VALUES ('$name','$username','$password','$isVendor', 1)");
+        $result = $con->query("INSERT INTO user(`name`, `email`, `password`, `isVendor`) VALUES ('$name','$username','$password','$isVendor')");
         if (!$result) {
             echo('<p style="color:red">Error creating user</p>');
         } else {
