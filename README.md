@@ -14,7 +14,7 @@ To install the application you need XAMPP installed on your PC.
 Then follow the following steps:
 - clone repository in the htdocs folder of your XAMPP application
 - start in the XAMPP control panel the Apache and MySQL Server
-- go in your browser on http://localhost/phpmyadmin/ and execute populateDB in the SQL tab !!!!!! OR SAMPLEDB!!!!!!!!!
+- go in your browser on http://localhost/phpmyadmin/ and import the database
 - check if the data in the `connect.php` is correct, you might need a different port
 - launch http://localhost/InfSecProject/login.php in your browser
 
@@ -93,11 +93,6 @@ It usually happens when doing Form submissions for example on the product info p
             <input type="submit" name="hack2" value="BUY HACK">
     </form>
     ```
-
-
-## Intercepting Chat Messages
-
-....
 
 
 ## Password Attacks (Burp Intruder)
@@ -203,9 +198,6 @@ On validation the Seller has access to the publicKey of the Buyer and knows the 
 $verification = openssl_verify($signatureMessage, $signature, $publicKey, "sha256WithRSAEncryption");
 ```
 
-## **Securing the chat**
-
-...
 
 ## **Securing the login**
 - Storing passwords with salt to prevent the usage of rainbow tables
