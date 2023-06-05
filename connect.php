@@ -1,6 +1,10 @@
 <?php
+
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+
 //create connection to the database
-$servername = "localhost:18002";
+$servername = "localhost";    //localhost:18002
 $user = "root";
 $pw = "";
 $db = "ecommerce_insecure";
@@ -10,5 +14,4 @@ if ($con->connect_error) {
     die("Error connecting to the database: " . $con->connect_error);
 }
 
-include ('mainfunctions.php');
-?>
+include('mainFunctions.php');

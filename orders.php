@@ -4,7 +4,7 @@
 <?php
 
     include ('connect.php');
-    include ('authentificationUser.php');
+    include('authenticationUser.php');
 
     global $con;
     global $user;

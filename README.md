@@ -1,25 +1,30 @@
 # InfSecProject
 
-Group members:
+Group members: 
 - Victoria Winkler
-- Alice Frezza,
+- Alice Frezza, 
 - Linda Maria Pircher
 
 In this Github repository there are two branches:
 - main: insecure version of the application
 - secureversion: secure version of the application
 
+# Video Link
+
 # User manual
 To install the application you need XAMPP installed on your PC.
-Then follow the following steps:
-- clone repository in the htdocs folder of your XAMPP application
-- start in the XAMPP control panel the Apache and MySQL Server
-- go in your browser on http://localhost/phpmyadmin/ and import the database
+Then follow these steps:
+- clone the repository into the htdocs folder of your XAMPP application
+- from the XAMPP control panel start the Apache and MySQL Server
+- in your browser access <http://localhost/phpmyadmin/>:
+    - create a new database with the name corresponding to the variable `$db` in`connect.php`
+    - import populateDb_version.sql   -> version is either secure or insecure depending on the branch
 - check if the data in the `connect.php` is correct, you might need a different port
-- launch http://localhost/InfSecProject/login.php in your browser
+- launch <http://localhost/InfSecProject/login.php> in your browser to access the website
 
 ## SOLUTIONS for SETUP Issues
-if SQL Database does not start -> kill in Activity Monitor -> search for _mysql
+if the SQL Database does not start -> kill in Activity Monitor -> search for _mysql
+if there is no connection a deletion of cookies in the Browser might also be needed
 
 # Insecure Version Description
 
@@ -27,32 +32,32 @@ if SQL Database does not start -> kill in Activity Monitor -> search for _mysql
 SQL attacks can be found in multiple pages. Some examples are:
 
 - Login and Register Page.<br>
-  Inserting in the username field the following query allows an attacker
-  to login with a certain account and without knowing the password.
+   Inserting in the username field the following query allows an attacker
+   to login with a certain account and without knowing the password.
     ```
     carlo@gmail.com'#
     ```
 
 - Landing Page.<br>
-  Inserting in the search field the following query allows an attacker
-  to not apply the filter for the world written, but to show all the products.
-  It would not be too dangerous anyway.
+    Inserting in the search field the following query allows an attacker 
+    to not apply the filter for the world written, but to show all the products. 
+    It would not be too dangerous anyway.
     ```
     abcdefg%' OR 1=1 -- 
     ```
 
 - Order Page. <br>
-  These two SQL attacks are possible in the order page.
-  - not dangerous.
-      ``` sql 
-      http://localhost/InfSecProject/orders.php?vendorId=5%20--
-      -- This url does not order the orders
-      ```
-  - dangerous.
-      ``` sql 
-      http://localhost/InfSecProject/orders.php?vendorId=5%20OR%201=1%20--
-      -- This url allows to see all the orders done by everyone
-      ```
+    These two SQL attacks are possible in the order page. 
+    - not dangerous.
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20--
+        -- This url does not order the orders
+        ```
+    - dangerous.
+        ``` sql 
+        http://localhost/InfSecProject/orders.php?vendorId=5%20OR%201=1%20--
+        -- This url allows to see all the orders done by everyone
+        ```
 
 ## **XSS Attacks**
 XSS attacks can be found in multiple pages. Some examples are:
@@ -61,22 +66,22 @@ XSS attacks can be found in multiple pages. Some examples are:
     ``` js 
     <script>alert("I am an attacker")</script>
     ```
-  by inserting this string in the field.
+    by inserting this string in the field.
 
 - The same attack can be used also in the productNew.php page, in each of the three fields.
-- A similar situation occurs when a user registers itself with a malicious username or email address. This is
+- A similar situation occurs when a user registers itself with a malicious username or email address. This is 
   dangerous due to the fact that this data can be seen by other users in multiple parts of the website,
-  making therefore possible the attack.
+  making therefore possible the attack. 
 
 ### Notes
-All the pages that receive values from the field using GET are protected, making sure that the value inserted is
-what it should be. In the `orders.php` page, for example, the id of the vendor is send through get from the landing page.
-but in the orders.php` page, there is a check ensuring that the number passed corresponds to the id of the vendor:
-``` php
-if ($user['isVendor']==0) {
-header('location: landingPage.php');
-}`
-```
+All the pages that receive values from the field using GET are protected by validating these values. 
+In the `orders.php` page, for example, the id of the vendor is send through get from the landing page
+but in the `orders.php` page, there is a check ensuring that the number passed corresponds to the id of the vendor: 
+    ``` php
+    if ($user['isVendor']==0) {
+        header('location: landingPage.php');
+    }`
+    ``` 
 
 ## XSRF/CSRF
 Cross Site Request Forgery can be used to manipulate or retrieve data whilst the user is logged in.(=ongoing session)
@@ -110,29 +115,29 @@ with rainbow tables.
 # Secure Version Description
 
 ## **SQL Sanitation**
-For the SQL Sanitation against SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard
-``` mysqli::query()  ```method. Prepared Statement are useful against this type of attack because the parameters of the query are sent
+For the SQL Sanitation against SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard 
+``` mysqli::query()  ```method. Prepared Statement are useful against this type of attack because the parameters of the query are send
 to the server after the query itself. The security is even stronger by the use of input validation, which is done in the XSS
-Sanitation part.
+Sanitation part. 
 
 ### Notes
 In order to perform multiple queries in one statement, PHP requires to use the function :
-``` php
-public mysqli::multi_query(string $query): bool
-```
-Throughout our project we only used:
-``` php
-public mysqli::query(string $query, int $result_mode = MYSQLI_STORE_RESULT): mysqli_result|bool
-```
-Therefore, we don't need to worry about sql injection attacks which are based on executing multiple queries at the same time.
-However, the developer should be careful about the possibility of attacks based on JOIN.
+    ``` php
+    public mysqli::multi_query(string $query): bool
+    ```
+    Throughout our project we only used: 
+    ``` php
+    public mysqli::query(string $query, int $result_mode = MYSQLI_STORE_RESULT): mysqli_result|bool
+    ```
+    Therefore, we don't need to worry about sql injection attacks which are based on executing multiple queries at the same time. 
+    However, the developer should be careful about the possibility of attacks based on JOIN. 
 
 ## **XSS Sanitation**
-In order to protect the website from XSS attacks, both reflected and stored, I implemented the following safety measures:
+In order to protect the website from XSS attacks, both reflected and stored, I implemented the following safety measures: 
 - filtering the input values received from $GET and $POST fields. For this I used the following php functions:
-  - ```trim()```
-  - ```strip_tags()```
-  - ```filter_var()```
+    - ```trim()```
+    - ```strip_tags()```
+    - ```filter_var()```
 - escaping special characters of the output string before outputting it. This has been done using ```htmlspecialchars()```.
 
 ### Tests
@@ -141,10 +146,10 @@ The website has been tested against most of the possible XSS attacks. Examples a
 - ```"%3cscript%3ealert(document.cookie)%3c/script%3e```
 - ```<scr<script>ipt>alert(document.cookie)</script>```
 
-Reference: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting
+Reference: https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting  
 
 ### xssSanitation.php file
-xssSanitation.php implements a function called ```sanitation``` which takes in input three variables: ``` $text, $dataType, $quoteStrict ```. According to the data type of the variable inserted and whether we are encoding the quotes strictly,
+xssSanitation.php implements a function called ```sanitation``` which takes in input three variables: ``` $text, $dataType, $quoteStrict ```. According to the data type of the variable inserted and whether we are encoding the quotes strictly, 
 it will return as output the safe version of the previous data. More documentation of the function can be found on the file itself.
 
 ## **Cross-Site-Request-Forgery (=CSRF or XSRF) protection**
@@ -201,14 +206,14 @@ $verification = openssl_verify($signatureMessage, $signature, $publicKey, "sha25
 
 ## **Securing the login**
 - Storing passwords with salt to prevent the usage of rainbow tables
-  For every user in the database there is a new column salt. The salt is generated when the user is registering with
-  a linear congruential generator and saved in this column in plain text.
-  The password saved in the database is the encryption of the concatenation of userpassword and salt.
+    For every user in the database there is a new column salt. The salt is generated when the user is registering with
+    a linear congruential generator and saved in this column in plain text.
+    The password saved in the database is the encryption of the concatenation of userpassword and salt.
 - check complexity of passwords to prevent bruteforce
-  implement a function in php to validate the complexity of the password on the register page. It follows the following rules:
-  - at least 8 characters
-  - at least one uppercase letter
-  - at least one lowercase letter
-  - at least one number
-  - at least one special character
+    implement a function in php to validate the complexity of the password on the register page. It follows the following rules:
+    - at least 8 characters
+    - at least one uppercase letter
+    - at least one lowercase letter
+    - at least one number
+    - at least one special character
 

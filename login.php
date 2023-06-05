@@ -7,7 +7,7 @@ global $con;
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 //if button is clicked
@@ -29,7 +29,7 @@ if(isset($_POST['login'])){
     if($search_result->num_rows == 1){
         $search_object = $search_result->fetch_object();
         $_SESSION['loginsession'] = $search_object->id;
-        header('location: landingpage.php');
+        header('location: landingPage.php');
     }else{
         echo('<p style="color:red">Wrong data</p>');
     }

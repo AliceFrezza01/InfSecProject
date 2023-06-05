@@ -7,7 +7,7 @@ global $con;
 
 //check if already logged in
 if(isset($_SESSION['loginsession'])){
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 //if button is clicked
@@ -37,7 +37,7 @@ if(isset($_POST['register'])){
         } else {
             $createduserid = mysqli_insert_id($con);
             $_SESSION['loginsession'] = $createduserid;
-            header('location: landingpage.php');
+            header('location: landingPage.php');
         }
 
     }

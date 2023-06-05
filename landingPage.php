@@ -4,7 +4,7 @@
 <?php
 
     include ('connect.php');
-    include ('authentificationUser.php');
+    include('authenticationUser.php');
 
     global $con;
     global $user;
@@ -31,7 +31,7 @@
 
 <!DOCTYPE html>
 <html lang="en-us">
-    <?php include('head.php') ?>
+    <?php $title = 'Shop: Home'; include('head.php') ?>
     <body>
        <?php include('menu.php') ?>
         <div class="headerHello">
@@ -45,15 +45,14 @@
                     echo "</div>";
                 }
                 ?>
-            <!-- SEARCH BAR -->
-            <div>
-                <form method="post">
-                    <input  type="text" name="toSearch" placeholder="Search..">
-                    <input class="button" type="submit" name="search" value="Search" />
-                    <input class="button" type="submit" name="resetSearch" value="Reset" />
-                </form>
-            </div>
-
+                <!-- SEARCH BAR -->
+                <div>
+                    <form method="post">
+                        <input  type="text" name="toSearch" placeholder="Search..">
+                        <input class="button" type="submit" name="search" value="Search" />
+                        <input class="button" type="submit" name="resetSearch" value="Reset" />
+                    </form>
+                </div>
             </div>
         </div>
         <!-- PRODUCT MENU -->

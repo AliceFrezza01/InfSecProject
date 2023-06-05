@@ -4,14 +4,15 @@ session_start();
 <?php
 
 include ('connect.php');
-include ('authentificationUser.php');
+include ('authenticationUser.php');
 
 global $con;
 global $user;
+global $userid;
 
 
 //get all chets
-$chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE recieverUserID = '$userid' or senderUserID = '$userid' order by id desc");
+$chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE receiverUserID = '$userid' or senderUserID = '$userid' order by id desc");
 $userchatcreated = array();
 if ($chatqueryresult->num_rows > 0) {
     while ($r = $chatqueryresult->fetch_assoc()) {
@@ -21,8 +22,8 @@ if ($chatqueryresult->num_rows > 0) {
                 $otheruserofchatid=$r['senderUserID'];
             }
         }else{
-            if(!array_key_exists($r['recieverUserID'], $userchatcreated)) {
-                $otheruserofchatid=$r['recieverUserID'];
+            if(!array_key_exists($r['receiverUserID'], $userchatcreated)) {
+                $otheruserofchatid=$r['receiverUserID'];
             }
         }
         if($otheruserofchatid != null){
@@ -49,13 +50,13 @@ if(isset($_GET['id'])){
     }
 
     //get all messages with this user
-    $chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE (recieverUserID = '$userid' and senderUserID = '$chatwithuserid') or (recieverUserID = '$chatwithuserid' and senderUserID = '$userid')");
+    $chatqueryresult = $con->query("SELECT * FROM chatmessage WHERE (receiverUserID = '$userid' and senderUserID = '$chatwithuserid') or (receiverUserID = '$chatwithuserid' and senderUserID = '$userid')");
     if ($chatqueryresult->num_rows > 0) {
         while ($r = $chatqueryresult->fetch_assoc()) {
             if($r['senderUserID'] == $userid){
                 $class = 'ownwrittenmsg';
             }else{
-                $class = 'recievedmsg';
+                $class = 'receivedmsg';
             }
             array_push($chatmsg, array('text'=>$r['text'], 'date'=>$r['date'], 'class'=>$class));
         }
@@ -65,7 +66,7 @@ if(isset($_GET['id'])){
     if(isset($_POST['sendmsg'])){
         $message = input($_POST['msgtext']);
         $date = date('Y-m-d H:i:s');
-        $result = $con->query("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES ('$message','$date','$chatwithuserid','$userid')");
+        $result = $con->query("INSERT INTO chatmessage(`text`, `date`, `receiverUserID`, `senderUserID`) VALUES ('$message','$date','$chatwithuserid','$userid')");
         header("Refresh:0");
     }
 }

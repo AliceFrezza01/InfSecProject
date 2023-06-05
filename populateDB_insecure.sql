@@ -31,7 +31,7 @@ CREATE TABLE `chatmessage` (
   `id` int(11) NOT NULL,
   `text` varchar(5000) NOT NULL,
   `date` datetime NOT NULL,
-  `recieverUserID` int(11) NOT NULL,
+  `receiverUserID` int(11) NOT NULL,
   `senderUserID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

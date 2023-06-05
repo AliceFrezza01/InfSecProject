@@ -7,7 +7,7 @@ ini_set( 'display_errors', true );
 
 //imports
 include 'connect.php';
-include ('authentificationUser.php');
+include('authenticationUser.php');
 global $con;
 global $user;
 
@@ -24,7 +24,7 @@ $productID = $_GET['productId'];
 
 //if invalid ProductID -> LANDINGPAGE
 if($productID == NULL || $nrAllProducts < $productID) {
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 
@@ -84,7 +84,7 @@ if (isset($_POST['logout'])) {
 
 //BACK BUTTON
 if(isset($_POST['back'])){
-    header('location: landingpage.php');
+    header('location: landingPage.php');
 }
 
 
