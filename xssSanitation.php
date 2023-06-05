@@ -46,7 +46,5 @@ function sanitation($text, $dataType, $quoteStrict = true) {
         return $text;
     } else {
         return "";
-    } 
-
-//    return $text;     //TODO possibly can be deleted?
+    }
 }
