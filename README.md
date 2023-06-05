@@ -9,17 +9,22 @@ In this Github repository there are two branches:
 - main: insecure version of the application
 - secureversion: secure version of the application
 
+# Video Link
+
 # User manual
 To install the application you need XAMPP installed on your PC.
-Then follow the following steps:
-- clone repository in the htdocs folder of your XAMPP application
-- start in the XAMPP control panel the Apache and MySQL Server
-- go in your browser on http://localhost/phpmyadmin/ and import the database
+Then follow these steps:
+- clone the repository into the htdocs folder of your XAMPP application
+- from the XAMPP control panel start the Apache and MySQL Server
+- in your browser access <http://localhost/phpmyadmin/>:
+    - create a new database with the name corresponding to the variable `$db` in`connect.php`
+    - import populateDb_version.sql   -> version is either secure or insecure depending on the branch
 - check if the data in the `connect.php` is correct, you might need a different port
-- launch http://localhost/InfSecProject/login.php in your browser
+- launch <http://localhost/InfSecProject/login.php> in your browser to access the website
 
 ## SOLUTIONS for SETUP Issues
-if SQL Database does not start -> kill in Activity Monitor -> search for _mysql
+if the SQL Database does not start -> kill in Activity Monitor -> search for _mysql
+if there is no connection a deletion of cookies in the Browser might also be needed
 
 # Insecure Version Description
 
@@ -69,9 +74,9 @@ XSS attacks can be found in multiple pages. Some examples are:
   making therefore possible the attack. 
 
 ### Notes
-All the pages that receive values from the field using GET are protected, making sure that the value inserted is
-what it should be. In the `orders.php` page, for example, the id of the vendor is send through get from the landing page. 
-but in the orders.php` page, there is a check ensuring that the number passed corresponds to the id of the vendor: 
+All the pages that receive values from the field using GET are protected by validating these values. 
+In the `orders.php` page, for example, the id of the vendor is send through get from the landing page
+but in the `orders.php` page, there is a check ensuring that the number passed corresponds to the id of the vendor: 
     ``` php
     if ($user['isVendor']==0) {
         header('location: landingPage.php');
@@ -111,7 +116,7 @@ with rainbow tables.
 
 ## **SQL Sanitation**
 For the SQL Sanitation against SQL injection attacks I used Prepared Statements to execute the queries, instead of the standard 
-``` mysqli::query()  ```method. Prepared Statement are useful against this type of attack because the parameters of the query are sent
+``` mysqli::query()  ```method. Prepared Statement are useful against this type of attack because the parameters of the query are send
 to the server after the query itself. The security is even stronger by the use of input validation, which is done in the XSS
 Sanitation part. 
 

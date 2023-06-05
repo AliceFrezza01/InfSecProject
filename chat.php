@@ -11,7 +11,7 @@ global $con;
 global $user;
 
 //prepared query: get all chats
-$chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE recieverUserID =? or senderUserID =? order by id desc");
+$chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE receiverUserID =? or senderUserID =? order by id desc");
 $chatqueryresult->bind_param('ii', $userid, $userid);
 $chatqueryresult->execute();
 $chatqueryresult = $chatqueryresult->get_result();
@@ -27,8 +27,8 @@ if ($chatqueryresult->num_rows > 0) {
                 $otheruserofchatid=$r['senderUserID'];
             }
         }else{
-            if(!array_key_exists($r['recieverUserID'], $userchatcreated)) {
-                $otheruserofchatid=$r['recieverUserID'];
+            if(!array_key_exists($r['receiverUserID'], $userchatcreated)) {
+                $otheruserofchatid=$r['receiverUserID'];
             }
         }
 
@@ -67,7 +67,7 @@ if(isset($_GET['id'])){
     }
 
     //prepared query: get all messages with this user
-    $chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE (recieverUserID =? and senderUserID=?) or (recieverUserID =? and senderUserID =?)");
+    $chatqueryresult = $con->prepare("SELECT * FROM chatmessage WHERE (receiverUserID =? and senderUserID=?) or (receiverUserID =? and senderUserID =?)");
     $chatqueryresult->bind_param('iiii', $userid, $chatwithuserid, $chatwithuserid, $userid);
     $chatqueryresult->execute();
     $chatqueryresult = $chatqueryresult->get_result();
@@ -77,7 +77,7 @@ if(isset($_GET['id'])){
             if($r['senderUserID'] == $userid){
                 $class = 'ownwrittenmsg';
             }else{
-                $class = 'recievedmsg';
+                $class = 'receivedmsg';
             }
             array_push($chatmsg, array('text'=>$r['text'], 'date'=>$r['date'], 'class'=>$class));
         }
@@ -89,11 +89,15 @@ if(isset($_GET['id'])){
         $token = input($_POST['token']);
 
         if (verifyToken($token)) {
-            $message = input(sanitation($_POST['msgtext'], "string", false));
+            try {
+                $message = input(sanitation($_POST['msgtext'], "string", false));
+            } catch (Exception $e) {
+                echo "invalid input";
+            }
             $date = date('Y-m-d H:i:s');
 
             //prepared query: insert a text message
-            $result = $con->prepare("INSERT INTO chatmessage(`text`, `date`, `recieverUserID`, `senderUserID`) VALUES (?,?,?,?)");
+            $result = $con->prepare("INSERT INTO chatmessage(`text`, `date`, `receiverUserID`, `senderUserID`) VALUES (?,?,?,?)");
             $result->bind_param('sssi', $message, $date, $chatwithuserid, $userid);
             $result->execute();
 

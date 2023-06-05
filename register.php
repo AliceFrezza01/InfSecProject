@@ -3,7 +3,7 @@ session_start();
 
 include ('connect.php');
 include ('xssSanitation.php');
-include('RSAandDSA.php');
+include ('RSAandDSA.php');
 
 global $con;
 
