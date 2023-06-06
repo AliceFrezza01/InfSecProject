@@ -39,39 +39,33 @@
 
 
 // CSRF TOKEN VERIFICATION
+/**
+ * verifies if a CSRF Token has been set and if it is valid or not
+ * @param $postToken token provided by Form submission
+ * @return bool True if valid, else False and exits page
+ */
 function verifyToken($postToken){
     $validToken = false;
 
     if(!$postToken || !isset($_SESSION["token"])){
-        console_log('token not set');
-//        exit("token not set!");
+        exit("token not set!");
     }
 
-    if($postToken == $_SESSION["token"]){
+    if($postToken == $_SESSION["token"]){               //check if token from Form matches Session Token
 
-        if (time() >= $_SESSION["token-expiry"]) {
-            console_log('token expired');
-            header('location: login.php');  //redirects to login
+        if (time() >= $_SESSION["token-expiry"]) {      //check if token is expired
+//            console_log('token expired');
+            header('location: login.php');
         }
-        console_log('valid token');
+//        console_log('valid token');
         $validToken = true;
-//        unset($_SESSION["token"]); //not necessary as session_destroy will destroy also token
     }
     else {
-        console_log('invalid token');
-//        exit("invalid token");
+        exit("invalid token");
     }
     return $validToken;
 
 }
-
-//$token = input($_POST['token']);
-//
-//if (verifyToken($token)) {}
-
-
-
-
 
 
 ?>

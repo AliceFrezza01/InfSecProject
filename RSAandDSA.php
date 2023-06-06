@@ -67,10 +67,11 @@ function getPublicKey($keyPair){
 
 
 
+
+
 /**
  * Creates and validates DSA
  */
-
 
 
 /**
