@@ -10,6 +10,18 @@ In this Github repository there are two branches:
 - secureversion: secure version of the application
 
 # Video Link
+<https://scientificnet-my.sharepoint.com/:v:/g/personal/viwinkler_unibz_it/Eec4Ep9iHpVJiDmg4taJ-RgBVCTX8MY0XoBe2xuiQQLCzg?e=4LUMGV>
+
+## Video Timecodes
+00:00:00:00    Introduction  
+00:00:39:28    Setup
+00:02:47:21    Demo Application
+00:06:38:18    Brute Force Login
+00:15:48:27    SQL Injection
+00:19:47:12    XSS Attacks
+00:24:28:03    CSRF Attacks
+00:27:29:22    DSA    
+
 
 # User manual
 To install the application you need XAMPP installed on your PC.
